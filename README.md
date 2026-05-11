@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Becas UCR — Portal Demo
 
-## Getting Started
+Demo web app simulating the scholarship (Beca) onboarding process for the **Universidad de Costa Rica**. The risk scoring engine is owned by a separate **Issuer** entity, visually and architecturally distinct from the UCR portal.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo Accounts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Email | Password | Status |
+|-------|----------|--------|
+| `maria@ucr.ac.cr` | `demo123` | Application in progress (Step 4) |
+| `carlos@ucr.ac.cr` | `demo123` | Fully approved |
+| `ana@ucr.ac.cr` | `demo123` | New, no applications |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
+### UCR ↔ Issuer Boundary
 
-To learn more about Next.js, take a look at the following resources:
+The app deliberately separates two entities:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Concern | UCR (navy palette) | Issuer (amber/dark palette) |
+|---------|---------------------|------------------------------|
+| Brand | `#0B2A5B` navy, shield logo | `#F59E0B` amber, geometric logo |
+| Routes | `/`, `/login`, `/dashboard/*` | `/issuer` |
+| Messaging | Oficina de Becas UCR sender | "Entidad externa" badge, read-only |
+| Risk scoring | Displays Issuer results | Owns the algorithm |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The `scoreApplicant()` function in `lib/risk-engine.ts` is called via the onboarding flow (Step 4) — simulating an API call to an external service. In production, replace the direct import with a `fetch()` to `https://api.issuer.cr/v1/score`.
 
-## Deploy on Vercel
+### Swapping the Admin URL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+In `lib/config.ts`:
+```ts
+export const ADMIN_PORTAL_URL = "https://admin.becas.ucr.ac.cr";
+```
+All "Portal Administrativo UCR ↗" links in the navbar, sidebar, and footer reference this constant.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### State Management
+
+- **Auth session**: `localStorage` key `ucr_session` (`{ studentId, email, name, token }`)
+- **Onboarding progress**: `localStorage` key `ucr_onboarding_progress` (auto-saved per step)
+- **All other state**: in-memory modules (`lib/mock-*.ts`)
+
+## Key Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page — marketing |
+| `/login` | Auth — split layout |
+| `/registro` | Registration |
+| `/dashboard` | Student dashboard — Mi Beca |
+| `/dashboard/documentos` | Document management |
+| `/dashboard/mensajes` | Inbox — UCR + Issuer messages |
+| `/dashboard/calendario` | Application calendar |
+| `/dashboard/perfil` | Student profile |
+| `/dashboard/solicitud/nueva` | 5-step onboarding flow |
+| `/issuer` | Issuer Risk Engine — live scoring demo |
+
+## Tech Stack
+
+- **Next.js 16** (App Router) + TypeScript
+- **Tailwind CSS** v4 + custom design tokens
+- **Framer Motion** — page transitions, scroll animations, count-up
+- **Lucide React** — icons
+- **Google Fonts**: Inter (UI) + Fraunces (editorial headings)
+- No database — all state via `localStorage` + in-memory seed data
