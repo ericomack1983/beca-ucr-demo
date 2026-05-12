@@ -42,7 +42,8 @@ export function DataUploadAnimation({ phase, progress, currentRecord, totalRecor
             <polygon points="30,5 5,25 55,25" fill="#1e3a5f" stroke="#3b82f6" strokeWidth="1.5" />
             <rect x="18" y="38" width="8" height="12" rx="1" fill="#60a5fa" />
             <rect x="34" y="38" width="8" height="12" rx="1" fill="#60a5fa" />
-            <text x="30" y="78" textAnchor="middle" fill="#60a5fa" fontSize="10" fontFamily="monospace">UCR</text>
+            <text x="30" y="76" textAnchor="middle" fill="#60a5fa" fontSize="8.5" fontFamily="monospace">Universidad</text>
+            <text x="30" y="87" textAnchor="middle" fill="#60a5fa" fontSize="8.5" fontFamily="monospace">Pública</text>
           </g>
 
           {/* Bank icon */}
@@ -53,7 +54,8 @@ export function DataUploadAnimation({ phase, progress, currentRecord, totalRecor
             <rect x="24" y="30" width="7" height="20" rx="1" fill="#4ade80" />
             <rect x="36" y="30" width="7" height="20" rx="1" fill="#4ade80" />
             <rect x="5" y="50" width="50" height="4" rx="1" fill="#22c55e" opacity="0.6" />
-            <text x="30" y="78" textAnchor="middle" fill="#4ade80" fontSize="10" fontFamily="monospace">BNCR</text>
+            <text x="30" y="76" textAnchor="middle" fill="#4ade80" fontSize="8.5" fontFamily="monospace">Visa</text>
+            <text x="30" y="87" textAnchor="middle" fill="#4ade80" fontSize="8.5" fontFamily="monospace">Issuer</text>
           </g>
 
           {/* Connection path */}
