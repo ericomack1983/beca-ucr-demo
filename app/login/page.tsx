@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   const fillDemo = (email: string) => {
     setEmail(email);
-    setPassword("demo123");
+    setPassword("Visastudent123");
     setError("");
   };
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
 
         {/* Bottom links */}
         <div className="relative flex gap-4 text-xs text-white/40">
-          <span>© 2026 UCR</span>
+          <span>© 2026 Universidad Pública</span>
           <span>·</span>
           <a href="#" className="hover:text-white/60 transition-colors">Privacidad</a>
           <span>·</span>
@@ -104,7 +104,7 @@ export default function LoginPage() {
               Bienvenido de nuevo
             </h1>
             <p className="text-sm text-slate-500">
-              Ingresa con tu cuenta institucional UCR
+              Ingresa con tu cuenta institucional
             </p>
           </div>
 
@@ -113,9 +113,9 @@ export default function LoginPage() {
             <p className="text-xs font-semibold text-blue-800 uppercase tracking-wider">Cuentas demo</p>
             <div className="flex flex-wrap gap-2">
               {[
-                { label: "María (en proceso)", email: "maria@ucr.ac.cr" },
-                { label: "Carlos (aprobado)", email: "carlos@ucr.ac.cr" },
-                { label: "Ana (nueva)", email: "ana@ucr.ac.cr" },
+                { label: "María (en proceso)", email: "maria@universidad.cr" },
+                { label: "Carlos (aprobado)", email: "carlos@universidad.cr" },
+                { label: "Ana (nueva)", email: "ana@universidad.cr" },
               ].map((d) => (
                 <button
                   key={d.email}
@@ -135,7 +135,7 @@ export default function LoginPage() {
               </label>
               <Input
                 type="email"
-                placeholder="nombre@ucr.ac.cr"
+                placeholder="nombre@universidad.cr"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"

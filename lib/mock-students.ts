@@ -16,8 +16,8 @@ export interface Student {
 export const MOCK_STUDENTS: Student[] = [
   {
     id: "stu_001",
-    email: "maria@ucr.ac.cr",
-    password: "demo123",
+    email: "maria@universidad.cr",
+    password: "Visastudent123",
     name: "María Fernández Solano",
     firstName: "María",
     carne: "B12345",
@@ -30,8 +30,8 @@ export const MOCK_STUDENTS: Student[] = [
   },
   {
     id: "stu_002",
-    email: "carlos@ucr.ac.cr",
-    password: "demo123",
+    email: "carlos@universidad.cr",
+    password: "Visastudent123",
     name: "Carlos Méndez Quirós",
     firstName: "Carlos",
     carne: "B23456",
@@ -44,8 +44,8 @@ export const MOCK_STUDENTS: Student[] = [
   },
   {
     id: "stu_003",
-    email: "ana@ucr.ac.cr",
-    password: "demo123",
+    email: "ana@universidad.cr",
+    password: "Visastudent123",
     name: "Ana Vargas Ramírez",
     firstName: "Ana",
     carne: "B34567",
