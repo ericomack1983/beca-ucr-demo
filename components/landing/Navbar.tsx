@@ -59,12 +59,63 @@ export default function Navbar() {
 
           {/* CTA + Admin */}
           <div className="hidden md:flex items-center gap-3">
-            <a
+            <motion.a
               href={ADMIN_PORTAL_URL}
-              className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+              className="relative flex items-center gap-2 text-sm font-semibold text-slate-600 px-4 py-2 rounded-xl overflow-hidden group"
+              whileHover="hover"
+              initial="rest"
             >
-              Portal Administrativo UCR
-            </a>
+              {/* animated background */}
+              <motion.span
+                className="absolute inset-0 rounded-xl"
+                variants={{
+                  rest: { opacity: 0, scale: 0.95 },
+                  hover: { opacity: 1, scale: 1 },
+                }}
+                transition={{ duration: 0.2 }}
+                style={{ background: 'linear-gradient(135deg,#0B2A5B08,#2563EB12)' }}
+              />
+              {/* border glow */}
+              <motion.span
+                className="absolute inset-0 rounded-xl border"
+                variants={{
+                  rest: { opacity: 0 },
+                  hover: { opacity: 1 },
+                }}
+                transition={{ duration: 0.2 }}
+                style={{ borderColor: '#2563EB30' }}
+              />
+              {/* icon */}
+              <motion.span
+                className="relative z-10"
+                variants={{ rest: { x: 0 }, hover: { x: -1 } }}
+                transition={{ duration: 0.2 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#2563EB]">
+                  <rect x="2" y="2" width="5" height="5" rx="1" />
+                  <rect x="9" y="2" width="5" height="5" rx="1" />
+                  <rect x="2" y="9" width="5" height="5" rx="1" />
+                  <rect x="9" y="9" width="5" height="5" rx="1" />
+                </svg>
+              </motion.span>
+              <motion.span
+                className="relative z-10 transition-colors group-hover:text-[#0B2A5B]"
+                variants={{ rest: { x: 0 }, hover: { x: 1 } }}
+                transition={{ duration: 0.2 }}
+              >
+                Portal Administrativo
+              </motion.span>
+              {/* arrow that slides in */}
+              <motion.span
+                className="relative z-10 text-[#2563EB]"
+                variants={{ rest: { x: -4, opacity: 0 }, hover: { x: 0, opacity: 1 } }}
+                transition={{ duration: 0.2 }}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 6h8M7 3l3 3-3 3" />
+                </svg>
+              </motion.span>
+            </motion.a>
             <Link href="/login">
               <Button size="sm" className="rounded-full px-5">
                 Iniciar Solicitud
