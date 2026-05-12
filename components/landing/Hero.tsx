@@ -312,19 +312,6 @@ function ApplicationCard() {
         ))}
       </div>
 
-      {/* Issuer badge */}
-      <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center flex-shrink-0">
-          <span className="text-white text-xs font-bold">I</span>
-        </div>
-        <div>
-          <p className="text-xs font-medium text-amber-800">Evaluación de Riesgo</p>
-          <p className="text-xs text-amber-600">Procesado por Issuer</p>
-        </div>
-        <div className="ml-auto">
-          <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        </div>
-      </div>
     </div>
   );
 }
