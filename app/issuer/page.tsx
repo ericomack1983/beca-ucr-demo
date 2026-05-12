@@ -186,7 +186,7 @@ export default function IssuerPortalPage() {
               </span>
             </div>
             <div className="hidden md:block text-xs text-slate-500 font-medium">
-              Lote UCR — {new Date().toLocaleDateString("es-CR", { year: "numeric", month: "long" })}
+              Lote Universidad Pública — {new Date().toLocaleDateString("es-CR", { year: "numeric", month: "long" })}
             </div>
             <button
               onClick={handleLogout}

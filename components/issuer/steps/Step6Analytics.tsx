@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import type { FlowStudent, CardConfig } from '@/types/issuer-flow';
 
@@ -77,6 +77,10 @@ function pts2path(pts: [number, number][]) {
 }
 
 function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [mouseX, setMouseX] = useState(0);
+
   const maxV = Math.max(...cur, ...prev) * 1.18;
   const toXY = (data: number[]): [number, number][] =>
     data.map((v, i) => [
@@ -88,9 +92,42 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
   const prevPts = toXY(prev);
   const gridY   = [0, 0.25, 0.5, 0.75, 1].map(p => ({ y: PAD.t + PH - p * PH, v: p * maxV }));
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const relX = e.clientX - rect.left;
+    setMouseX(relX);
+    const svgX = (relX / rect.width) * CW;
+    const raw = (svgX - PAD.l) / (PW / (MONTHS.length - 1));
+    setHoverIdx(Math.max(0, Math.min(MONTHS.length - 1, Math.round(raw))));
+  };
+
+  const hi = hoverIdx;
+  const pct = hi !== null && prev[hi] > 0
+    ? (((cur[hi] - prev[hi]) / prev[hi]) * 100).toFixed(1)
+    : null;
+
+  const tooltipX = hi !== null
+    ? Math.min(Math.max(mouseX, 60), (containerRef.current?.clientWidth ?? 400) - 120)
+    : 0;
+
   return (
-    <div className="w-full overflow-hidden" style={{ height: 160 }}>
-      <svg width="100%" height="100%" viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="xMidYMid meet">
+    <div ref={containerRef} className="relative w-full select-none" style={{ height: 168 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setHoverIdx(null)}
+    >
+      <svg width="100%" height="100%" viewBox={`0 0 ${CW} ${CH}`} preserveAspectRatio="xMidYMid meet"
+        style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1B5E20" stopOpacity={0.13} />
+            <stop offset="100%" stopColor="#1B5E20" stopOpacity={0} />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
         {/* grid */}
         {gridY.map(({ y, v }, i) => (
           <g key={i}>
@@ -110,54 +147,96 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
         {/* month labels */}
         {MONTHS.map((m, i) => (
           <text key={m} x={PAD.l + (i / (MONTHS.length - 1)) * PW} y={CH - 5}
-            textAnchor="middle" fontSize={9} fill="#94a3b8">
+            textAnchor="middle" fontSize={9}
+            fill={hi === i ? '#1B5E20' : '#94a3b8'}
+            fontWeight={hi === i ? '700' : '400'}>
             {m}
           </text>
         ))}
 
-        {/* area fill – current year */}
+        {/* area fill */}
         <motion.path
-          d={`${pts2path(curPts)} L ${curPts[curPts.length - 1][0]} ${PAD.t + PH} L ${curPts[0][0]} ${PAD.t + PH} Z`}
-          fill="url(#aGrad)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        />
-        <defs>
-          <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1B5E20" stopOpacity={0.12} />
-            <stop offset="100%" stopColor="#1B5E20" stopOpacity={0} />
-          </linearGradient>
-        </defs>
+          d={`${pts2path(curPts)} L ${curPts[curPts.length-1][0]} ${PAD.t+PH} L ${curPts[0][0]} ${PAD.t+PH} Z`}
+          fill="url(#aGrad)" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }} />
 
-        {/* prev year line */}
+        {/* hover area fill highlight */}
+        {hi !== null && (
+          <rect x={curPts[hi][0] - PW / (MONTHS.length - 1) / 2} y={PAD.t}
+            width={PW / (MONTHS.length - 1)} height={PH}
+            fill="#1B5E20" fillOpacity={0.04} rx={2} />
+        )}
+
+        {/* prev line */}
         <motion.path d={pts2path(prevPts)} fill="none"
           stroke="#cbd5e1" strokeWidth={1.8} strokeDasharray="5 3"
           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
           transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }} />
 
-        {/* current year line */}
+        {/* current line */}
         <motion.path d={pts2path(curPts)} fill="none"
           stroke="#1B5E20" strokeWidth={2.5}
           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
           transition={{ duration: 1.4, delay: 0.15, ease: [0.16, 1, 0.3, 1] }} />
 
+        {/* crosshair */}
+        {hi !== null && (
+          <line x1={curPts[hi][0]} y1={PAD.t} x2={curPts[hi][0]} y2={PAD.t + PH}
+            stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 2" />
+        )}
+
         {/* dots – prev */}
         {prevPts.map(([x, y], i) => (
-          <motion.circle key={i} cx={x} cy={y} r={2.5}
-            fill="#cbd5e1" stroke="white" strokeWidth={1.5}
+          <motion.circle key={i} cx={x} cy={y}
+            r={hi === i ? 5 : 2.5}
+            fill={hi === i ? '#94a3b8' : '#cbd5e1'} stroke="white" strokeWidth={1.5}
             initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ delay: 1.2 + i * 0.06 }} />
         ))}
 
         {/* dots – current */}
         {curPts.map(([x, y], i) => (
-          <motion.circle key={i} cx={x} cy={y} r={3.5}
-            fill="#1B5E20" stroke="white" strokeWidth={1.5}
+          <motion.circle key={i} cx={x} cy={y}
+            r={hi === i ? 7 : 3.5}
+            fill="#1B5E20" stroke="white" strokeWidth={hi === i ? 2.5 : 1.5}
+            filter={hi === i ? 'url(#glow)' : undefined}
             initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ delay: 1.35 + i * 0.06 }} />
         ))}
       </svg>
+
+      {/* Tooltip */}
+      {hi !== null && (
+        <div
+          className="absolute pointer-events-none z-10 -translate-x-1/2"
+          style={{ left: tooltipX, top: 4 }}
+        >
+          <div className="bg-white rounded-xl shadow-xl border border-slate-100 px-3.5 py-2.5 min-w-[130px]">
+            <p className="text-[10px] font-bold text-slate-700 mb-2">{MONTHS[hi]} 2026</p>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-[#1B5E20]" />
+                  <span className="text-[10px] text-slate-500">2026</span>
+                </div>
+                <span className="text-[11px] font-bold font-mono text-slate-900">{fmtM(cur[hi])}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-px bg-slate-400" style={{ borderTop: '2px dashed #94a3b8', height: 0 }} />
+                  <span className="text-[10px] text-slate-500">2025</span>
+                </div>
+                <span className="text-[11px] font-bold font-mono text-slate-500">{fmtM(prev[hi])}</span>
+              </div>
+            </div>
+            {pct !== null && (
+              <div className={`mt-2 pt-2 border-t border-slate-100 text-[10px] font-bold text-right ${parseFloat(pct) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                {parseFloat(pct) >= 0 ? '▲' : '▼'} {Math.abs(parseFloat(pct))}% YoY
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -165,8 +244,9 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
 /* ─── Donut chart ─── */
 
 function DonutChart({ total }: { total: number }) {
-  const SIZE = 176; const CX = SIZE / 2; const CY = SIZE / 2;
-  const R = 60; const SW = 22;
+  const SIZE = 188; const CX = SIZE / 2; const CY = SIZE / 2;
+  const R = 62; const SW = 22;
+  const [hoverId, setHoverId] = useState<string | null>(null);
 
   const segs = useMemo(() => {
     let a = 0;
@@ -176,33 +256,82 @@ function DonutChart({ total }: { total: number }) {
     });
   }, []);
 
+  const hovered = hoverId ? CATS.find(c => c.id === hoverId) : null;
+  const centerAmt = hovered ? Math.round(total * hovered.pct / 100) : total;
+
   return (
     <div className="flex items-center gap-5">
-      <div className="shrink-0">
-        <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
+      <div className="shrink-0 relative">
+        <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ overflow: 'visible' }}>
+          <defs>
+            <filter id="segGlow">
+              <feGaussianBlur stdDeviation="2.5" result="b" />
+              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
           <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f1f5f9" strokeWidth={SW} />
-          {segs.map((seg, i) => (
-            <motion.path key={seg.id}
-              d={arc(CX, CY, R, seg.s, seg.e)}
-              fill="none" stroke={seg.color} strokeWidth={SW} strokeLinecap="butt"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 0.75, delay: 0.25 + i * 0.1, ease: 'easeOut' }}
-            />
-          ))}
-          <text x={CX} y={CY - 7} textAnchor="middle" fontSize={10} fill="#64748b" fontWeight="600" fontFamily="system-ui">Total</text>
-          <text x={CX} y={CY + 9} textAnchor="middle" fontSize={11} fill="#0f172a" fontWeight="700" fontFamily="monospace">{fmtM(total)}</text>
-          <text x={CX} y={CY + 22} textAnchor="middle" fontSize={9} fill="#94a3b8" fontFamily="system-ui">mensual</text>
+          {segs.map((seg, i) => {
+            const isHov = hoverId === seg.id;
+            const isDim = hoverId && !isHov;
+            return (
+              <motion.path key={seg.id}
+                d={arc(CX, CY, R, seg.s, seg.e)}
+                fill="none"
+                stroke={seg.color}
+                strokeLinecap="butt"
+                filter={isHov ? 'url(#segGlow)' : undefined}
+                style={{ cursor: 'pointer' }}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{
+                  pathLength: 1,
+                  opacity: isDim ? 0.3 : 1,
+                  strokeWidth: isHov ? SW + 7 : SW,
+                }}
+                transition={{
+                  pathLength: { duration: 0.75, delay: 0.25 + i * 0.1, ease: 'easeOut' },
+                  opacity: { duration: 0.2 },
+                  strokeWidth: { duration: 0.2 },
+                }}
+                onMouseEnter={() => setHoverId(seg.id)}
+                onMouseLeave={() => setHoverId(null)}
+              />
+            );
+          })}
+          {/* center label */}
+          {hovered ? (
+            <>
+              <text x={CX} y={CY - 14} textAnchor="middle" fontSize={10} fill={hovered.color} fontWeight="700" fontFamily="system-ui">{hovered.label}</text>
+              <text x={CX} y={CY + 4}  textAnchor="middle" fontSize={14} fill="#0f172a" fontWeight="800" fontFamily="monospace">{hovered.pct}%</text>
+              <text x={CX} y={CY + 19} textAnchor="middle" fontSize={10} fill="#64748b" fontFamily="monospace">{fmtM(centerAmt)}</text>
+            </>
+          ) : (
+            <>
+              <text x={CX} y={CY - 7}  textAnchor="middle" fontSize={10} fill="#64748b" fontWeight="600" fontFamily="system-ui">Total</text>
+              <text x={CX} y={CY + 9}  textAnchor="middle" fontSize={11} fill="#0f172a" fontWeight="700" fontFamily="monospace">{fmtM(total)}</text>
+              <text x={CX} y={CY + 22} textAnchor="middle" fontSize={9}  fill="#94a3b8" fontFamily="system-ui">mensual</text>
+            </>
+          )}
         </svg>
       </div>
-      <div className="space-y-2.5 flex-1 min-w-0">
-        {CATS.map(c => (
-          <div key={c.id} className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: c.color }} />
-            <span className="text-[11px] text-slate-600 flex-1 truncate">{c.label}</span>
-            <span className="text-[11px] font-bold text-slate-500 font-mono">{c.pct}%</span>
-          </div>
-        ))}
+
+      {/* Legend */}
+      <div className="space-y-2 flex-1 min-w-0">
+        {CATS.map(c => {
+          const isHov = hoverId === c.id;
+          const isDim = hoverId && !isHov;
+          return (
+            <div key={c.id}
+              className="flex items-center gap-2 rounded-lg px-2 py-1 cursor-pointer transition-all duration-150"
+              style={{ background: isHov ? `${c.color}12` : 'transparent', opacity: isDim ? 0.4 : 1 }}
+              onMouseEnter={() => setHoverId(c.id)}
+              onMouseLeave={() => setHoverId(null)}
+            >
+              <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: c.color }} />
+              <span className={`text-[11px] flex-1 truncate transition-colors ${isHov ? 'font-bold text-slate-900' : 'text-slate-600'}`}>{c.label}</span>
+              <span className="text-[11px] font-bold font-mono" style={{ color: isHov ? c.color : '#94a3b8' }}>{c.pct}%</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -211,40 +340,58 @@ function DonutChart({ total }: { total: number }) {
 /* ─── Category bar table ─── */
 
 function CategoryTable({ total }: { total: number }) {
+  const [hoverId, setHoverId] = useState<string | null>(null);
   return (
-    <div className="space-y-3.5">
-      <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 text-[9px] font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-100">
+    <div className="space-y-1">
+      <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 text-[9px] font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-100 px-2">
         <span>Categoría MCC</span>
         <span className="text-right">Gasto</span>
-        <span className="text-right w-14">Var. YoY</span>
+        <span className="text-right w-16">Var. YoY</span>
       </div>
       {CATS.map((c, i) => {
         const amount = Math.round(total * c.pct / 100);
+        const isHov = hoverId === c.id;
         return (
           <motion.div key={c.id}
             initial={{ opacity: 0, x: 8 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 + i * 0.07 }}
-            className="space-y-1"
+            className="space-y-1.5 rounded-xl px-2 py-2 cursor-default transition-colors duration-150"
+            style={{ background: isHov ? `${c.color}0d` : 'transparent' }}
+            onMouseEnter={() => setHoverId(c.id)}
+            onMouseLeave={() => setHoverId(null)}
           >
             <div className="grid grid-cols-[1fr_auto_auto] gap-x-3 items-center">
               <div className="flex items-center gap-2 min-w-0">
-                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: c.color }} />
-                <span className="text-[11px] font-semibold text-slate-700 truncate">{c.label}</span>
+                <motion.div className="rounded-full shrink-0"
+                  style={{ background: c.color }}
+                  animate={{ width: isHov ? 10 : 8, height: isHov ? 10 : 8 }}
+                  transition={{ duration: 0.15 }}
+                />
+                <span className={`text-[11px] truncate transition-all ${isHov ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'}`}>{c.label}</span>
               </div>
-              <span className="text-[11px] font-bold font-mono text-slate-700 text-right">{fmtM(amount)}</span>
-              <span className={`text-[11px] font-bold text-right w-14 ${c.yoy >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+              <span className={`text-[11px] font-bold font-mono text-right transition-colors ${isHov ? 'text-slate-900' : 'text-slate-600'}`}>
+                {fmtM(amount)}
+              </span>
+              <span className={`text-[11px] font-bold text-right w-16 ${c.yoy >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                 {c.yoy >= 0 ? '+' : ''}{c.yoy}%
               </span>
             </div>
             <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <motion.div className="h-full rounded-full"
-                style={{ background: c.color }}
+                style={{ background: c.color, boxShadow: isHov ? `0 0 6px ${c.color}80` : 'none' }}
                 initial={{ width: 0 }}
                 animate={{ width: `${c.pct}%` }}
                 transition={{ duration: 0.9, delay: 0.2 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
+            {isHov && (
+              <motion.div initial={{ opacity: 0, y: -2 }} animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 text-[9px] text-slate-400 font-mono">
+                <span>{c.pct}% del total mensual</span>
+                <span className="text-emerald-600">↑ vs 2025</span>
+              </motion.div>
+            )}
           </motion.div>
         );
       })}
