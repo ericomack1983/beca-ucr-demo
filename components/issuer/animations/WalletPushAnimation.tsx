@@ -34,12 +34,19 @@ function VisaCardMini({ className = '' }: { className?: string }) {
         style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}
       />
       <div className="flex justify-end">
-        <svg width="26" height="9" viewBox="0 0 52 18" fill="none">
-          <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="white" />
-          <path d="M17 1H21V17H17V1Z" fill="white" />
-          <path d="M23 12.5C23 12.5 25 14.5 27.5 14.5C29 14.5 30 13.8 30 12.8C30 11.5 28.5 11 27 10.3C25 9.4 23 8.2 23 5.8C23 3 25.5 0.7 29 0.7C31.5 0.7 33.5 1.8 33.5 1.8L32 4.8C32 4.8 30.5 3.8 29 3.8C27.8 3.8 27 4.4 27 5.2C27 6.3 28.5 6.8 30 7.5C32 8.4 34 9.8 34 12.5C34 15.5 31.5 17.5 27.5 17.5C24.5 17.5 22.5 16 22 15.5L23 12.5Z" fill="white" />
-          <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="white" />
-        </svg>
+        <span
+          className="text-white leading-none select-none"
+          style={{
+            fontFamily: '"Arial Black","Arial Bold",Arial,sans-serif',
+            fontWeight: 900,
+            fontStyle: 'italic',
+            fontSize: 10,
+            letterSpacing: '-0.3px',
+            textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+          }}
+        >
+          VISA
+        </span>
       </div>
       <div
         className="absolute inset-0 pointer-events-none"
@@ -64,12 +71,20 @@ function BNCRNode({ isRunning }: { isRunning: boolean }) {
         } : { boxShadow: '0 0 0 0 rgba(74,222,128,0)' }}
         transition={{ duration: 1.8, repeat: isRunning ? Infinity : 0 }}
       >
-        <svg width="30" height="10" viewBox="0 0 52 18" fill="none" aria-label="Visa">
-          <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="#4ade80" />
-          <path d="M17 1H21V17H17V1Z" fill="#4ade80" />
-          <path d="M23 12.5C23 12.5 25 14.5 27.5 14.5C29 14.5 30 13.8 30 12.8C30 11.5 28.5 11 27 10.3C25 9.4 23 8.2 23 5.8C23 3 25.5 0.7 29 0.7C31.5 0.7 33.5 1.8 33.5 1.8L32 4.8C32 4.8 30.5 3.8 29 3.8C27.8 3.8 27 4.4 27 5.2C27 6.3 28.5 6.8 30 7.5C32 8.4 34 9.8 34 12.5C34 15.5 31.5 17.5 27.5 17.5C24.5 17.5 22.5 16 22 15.5L23 12.5Z" fill="#4ade80" />
-          <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="#4ade80" />
-        </svg>
+        <span
+          className="leading-none select-none"
+          style={{
+            color: '#4ade80',
+            fontFamily: '"Arial Black","Arial Bold",Arial,sans-serif',
+            fontWeight: 900,
+            fontStyle: 'italic',
+            fontSize: 16,
+            letterSpacing: '-0.5px',
+            textShadow: '0 1px 4px rgba(74,222,128,0.3)',
+          }}
+        >
+          VISA
+        </span>
       </motion.div>
       <div className="text-center leading-tight">
         <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">Visa Emisor</p>

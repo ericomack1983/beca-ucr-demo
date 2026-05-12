@@ -290,14 +290,23 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
                   <div className="shrink-0 text-right hidden sm:block">
                     <div className="flex items-center gap-1.5">
                       <div
-                        className="w-8 h-5 rounded shrink-0"
-                        style={{ background: 'linear-gradient(135deg, #0d1b2a, #1B5E20)' }}
+                        className="w-11 h-7 rounded-md shrink-0 flex items-center justify-center relative overflow-hidden"
+                        style={{ background: 'linear-gradient(135deg, #0d1b2a 0%, #1b4332 60%, #1B5E20 100%)' }}
                       >
-                        <svg width="100%" height="100%" viewBox="0 0 52 18" fill="none" className="p-0.5">
-                          <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="white" />
-                          <path d="M17 1H21V17H17V1Z" fill="white" />
-                          <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="white" />
-                        </svg>
+                        <span
+                          className="text-white select-none leading-none"
+                          style={{
+                            fontFamily: '"Arial Black", "Arial Bold", Arial, sans-serif',
+                            fontWeight: 900,
+                            fontStyle: 'italic',
+                            fontSize: 11,
+                            letterSpacing: '-0.3px',
+                            textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                          }}
+                        >
+                          VISA
+                        </span>
+                        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.07) 50%,transparent 70%)' }} />
                       </div>
                       <span className="text-[10px] font-mono text-slate-500">•••• {issued.last4}</span>
                     </div>
