@@ -417,33 +417,70 @@ function PercentOfSpendChart() {
   const CHART_H = TOP2 + CATS.length * ROW2 + 8;
   const gridPcts = [0, 10, 20, 30, 40];
 
-  function Square({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+  function ShapeTooltip({ cx, cy, value }: { cx: number; cy: number; value: number }) {
     return (
-      <motion.rect x={cx - 5} y={cy - 5} width={10} height={10}
-        fill={fill} rx={1}
-        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        style={{ transformOrigin: `${cx}px ${cy}px` }}
-      />
+      <motion.g initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.15, ease: 'easeOut' }} style={{ pointerEvents: 'none' }}>
+        <rect x={cx - 17} y={cy - 30} width={34} height={15} rx={3} fill="#1e293b" opacity={0.88} />
+        <text x={cx} y={cy - 18} textAnchor="middle" fontSize={9} fill="white"
+          fontFamily="monospace" fontWeight="600">{value}%</text>
+      </motion.g>
     );
   }
-  function Circle({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+
+  function Square({ cx, cy, fill, delay, value }: { cx: number; cy: number; fill: string; delay: number; value: number }) {
+    const [hov, setHov] = useState(false);
     return (
-      <motion.circle cx={cx} cy={cy} r={5.5} fill={fill}
-        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        style={{ transformOrigin: `${cx}px ${cy}px` }}
-      />
+      <g style={{ cursor: 'pointer' }}>
+        <motion.rect x={cx - 5} y={cy - 5} width={10} height={10} fill={fill} rx={1}
+          variants={{
+            hidden: { scale: 0, opacity: 0 },
+            visible: { scale: 1, opacity: 1, transition: { delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
+            hovered: { scale: 1.9, opacity: 1, transition: { type: 'spring' as const, stiffness: 380, damping: 16 } },
+          }}
+          initial="hidden" animate={hov ? 'hovered' : 'visible'}
+          style={{ transformOrigin: `${cx}px ${cy}px` }}
+          onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+        />
+        {hov && <ShapeTooltip cx={cx} cy={cy} value={value} />}
+      </g>
     );
   }
-  function Triangle({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+  function Circle({ cx, cy, fill, delay, value }: { cx: number; cy: number; fill: string; delay: number; value: number }) {
+    const [hov, setHov] = useState(false);
+    return (
+      <g style={{ cursor: 'pointer' }}>
+        <motion.circle cx={cx} cy={cy} r={5.5} fill={fill}
+          variants={{
+            hidden: { scale: 0, opacity: 0 },
+            visible: { scale: 1, opacity: 1, transition: { delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
+            hovered: { scale: 1.9, opacity: 1, transition: { type: 'spring' as const, stiffness: 380, damping: 16 } },
+          }}
+          initial="hidden" animate={hov ? 'hovered' : 'visible'}
+          style={{ transformOrigin: `${cx}px ${cy}px` }}
+          onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+        />
+        {hov && <ShapeTooltip cx={cx} cy={cy} value={value} />}
+      </g>
+    );
+  }
+  function Triangle({ cx, cy, fill, delay, value }: { cx: number; cy: number; fill: string; delay: number; value: number }) {
+    const [hov, setHov] = useState(false);
     const pts = `${cx},${cy - 6.5} ${cx + 6},${cy + 5} ${cx - 6},${cy + 5}`;
     return (
-      <motion.polygon points={pts} fill={fill}
-        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        style={{ transformOrigin: `${cx}px ${cy}px` }}
-      />
+      <g style={{ cursor: 'pointer' }}>
+        <motion.polygon points={pts} fill={fill}
+          variants={{
+            hidden: { scale: 0, opacity: 0 },
+            visible: { scale: 1, opacity: 1, transition: { delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
+            hovered: { scale: 1.9, opacity: 1, transition: { type: 'spring' as const, stiffness: 380, damping: 16 } },
+          }}
+          initial="hidden" animate={hov ? 'hovered' : 'visible'}
+          style={{ transformOrigin: `${cx}px ${cy}px` }}
+          onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+        />
+        {hov && <ShapeTooltip cx={cx} cy={cy} value={value} />}
+      </g>
     );
   }
 
@@ -507,13 +544,6 @@ function PercentOfSpendChart() {
           {CATS.map((cat, i) => {
             const d = PCT_DATA[cat.id];
             const cy = TOP2 + i * ROW2 + ROW2 / 2;
-            const maxV = Math.max(
-              isVisible(2024) ? d.y2024 : 0,
-              isVisible(2025) ? d.y2025 : 0,
-              isVisible(2026) ? d.y2026 : 0,
-            );
-            const lineEnd = isVisible(null) ? Math.max(d.y2024, d.y2025, d.y2026) : maxV;
-
             return (
               <g key={cat.id}>
                 {/* Row separator */}
@@ -531,26 +561,20 @@ function PercentOfSpendChart() {
                 <line x1={xp(0)} y1={cy} x2={xp(MAX_PCT)} y2={cy}
                   stroke="#e2e8f0" strokeWidth={1} />
 
-                {/* Animated fill line */}
-                <motion.line x1={xp(0)} y1={cy}
-                  animate={{ x2: lineEnd > 0 ? xp(lineEnd) : xp(0) }}
-                  transition={{ duration: 0.7, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                  stroke="#cbd5e1" strokeWidth={1.5} />
-
                 {/* 2024 – square */}
                 {isVisible(2024) && (
                   <Square cx={xp(d.y2024)} cy={cy} fill="#94a3b8"
-                    delay={0.55 + i * 0.08} />
+                    delay={0.55 + i * 0.08} value={d.y2024} />
                 )}
                 {/* 2025 – circle */}
                 {isVisible(2025) && (
                   <Circle cx={xp(d.y2025)} cy={cy} fill="#475569"
-                    delay={0.6 + i * 0.08} />
+                    delay={0.6 + i * 0.08} value={d.y2025} />
                 )}
                 {/* 2026 – triangle */}
                 {isVisible(2026) && (
                   <Triangle cx={xp(d.y2026)} cy={cy} fill="#1434CB"
-                    delay={0.65 + i * 0.08} />
+                    delay={0.65 + i * 0.08} value={d.y2026} />
                 )}
               </g>
             );

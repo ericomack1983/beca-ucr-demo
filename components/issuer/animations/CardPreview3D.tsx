@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion, useSpring, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, useAnimationFrame } from 'framer-motion';
 import type { CardConfig } from '@/types/issuer-flow';
 import { MCC_CATEGORIES } from '@/types/issuer-flow';
 
@@ -54,32 +54,44 @@ interface Props {
 }
 
 export function CardPreview3D({ config }: Props) {
-  const [mouseX, setMouseX] = useState(0);
-  const [mouseY, setMouseY] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
-
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 20 });
-  const rotateX = useTransform(springY, [-0.5, 0.5], [8, -8]);
-  const rotateY = useTransform(springX, [-0.5, 0.5], [-12, 12]);
-
+  const isHoveredRef = useRef(false);
   const isPhysical = config.deliveryType === 'digital_physical';
-  const gradients: Record<string, string> = {
-    debit: 'linear-gradient(135deg, #1a2fd4 0%, #2346e8 55%, #2b5af5 100%)',
-    prepaid: 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 50%, #1434CB 100%)',
-  };
+  const gradient = 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 50%, #1434CB 100%)';
+
+  const rotXRaw = useMotionValue(0);
+  const rotYRaw = useMotionValue(0);
+  const rotX = useSpring(rotXRaw, { stiffness: 50, damping: 14 });
+  const rotY = useSpring(rotYRaw, { stiffness: 50, damping: 14 });
+
+  // Glare follows tilt
+  const glareBackground = useTransform(
+    [rotY, rotX],
+    ([ry, rx]: number[]) => {
+      const gx = 50 + (ry / 22) * 38;
+      const gy = 50 - (rx / 10) * 35;
+      return `radial-gradient(ellipse at ${gx}% ${gy}%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 38%, transparent 62%)`;
+    }
+  );
+
+  useAnimationFrame((t) => {
+    if (isHoveredRef.current) return;
+    const baseY = isPhysical ? 180 : 0;
+    rotYRaw.set(baseY + Math.sin(t / 4200) * 16);
+    rotXRaw.set(Math.sin(t / 6100) * 5);
+  });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
-    setMouseX((e.clientX - rect.left) / rect.width - 0.5);
-    setMouseY((e.clientY - rect.top) / rect.height - 0.5);
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    rotYRaw.set((isPhysical ? 180 : 0) + nx * 30);
+    rotXRaw.set(-ny * 20);
   };
 
-  const handleMouseLeave = () => {
-    setMouseX(0);
-    setMouseY(0);
-  };
+  const handleMouseEnter = () => { isHoveredRef.current = true; };
+  const handleMouseLeave = () => { isHoveredRef.current = false; };
 
   const selectedMCCs = MCC_CATEGORIES.filter(m => config.mccs.includes(m.id));
 
@@ -88,40 +100,42 @@ export function CardPreview3D({ config }: Props) {
       <div
         ref={cardRef}
         className="cursor-pointer"
-        style={{ perspective: '800px', width: '100%', maxWidth: 340, margin: '0 auto' }}
+        style={{ perspective: '900px', width: '100%', maxWidth: 340, margin: '0 auto' }}
         onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <motion.div
-          style={{
-            rotateX,
-            rotateY,
-            transformStyle: 'preserve-3d',
-          }}
-          animate={{ rotateY: isPhysical ? 180 : 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d' }}
           className="relative select-none"
           aria-label="Vista previa de tarjeta"
         >
           {/* Front */}
           <div
-            className="relative rounded-2xl overflow-hidden shadow-2xl"
+            className="relative rounded-2xl overflow-hidden"
             style={{
-              background: gradients[config.cardType],
+              background: gradient,
               aspectRatio: '1.586 / 1',
               backfaceVisibility: 'hidden',
+              boxShadow: '0 32px 64px -12px rgba(20,52,203,0.55), 0 0 0 1px rgba(255,255,255,0.06)',
             }}
           >
-            <div className="absolute rounded-full opacity-10"
-              style={{ width: '55%', aspectRatio: '1/1', background: 'rgba(255,255,255,0.07)', top: '10%', right: '-5%' }} />
-            <div className="absolute rounded-full opacity-10"
-              style={{ width: '45%', aspectRatio: '1/1', background: 'rgba(255,255,255,0.05)', top: '30%', right: '15%' }} />
+            <div className="absolute rounded-full"
+              style={{ width: '55%', aspectRatio: '1/1', background: 'rgba(255,255,255,0.06)', top: '10%', right: '-5%' }} />
+            <div className="absolute rounded-full"
+              style={{ width: '45%', aspectRatio: '1/1', background: 'rgba(255,255,255,0.04)', top: '30%', right: '15%' }} />
+
+            {/* Dynamic glare */}
+            <motion.div
+              className="absolute inset-0 rounded-2xl pointer-events-none"
+              style={{ background: glareBackground }}
+            />
 
             <div className="relative h-full flex flex-col justify-between p-5">
               <div className="flex items-start justify-between">
                 <div className="space-y-2">
                   <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">
-                    {CARD_TYPE_LABELS[config.cardType]} BNCR
+                    {CARD_TYPE_LABELS[config.cardType]}
                   </span>
                   <div className="flex items-center gap-2">
                     <ChipSVG />
@@ -168,14 +182,15 @@ export function CardPreview3D({ config }: Props) {
             </div>
           </div>
 
-          {/* Back face (shown when physical selected) */}
+          {/* Back face (physical) */}
           {isPhysical && (
             <div
-              className="absolute inset-0 rounded-2xl overflow-hidden shadow-2xl"
+              className="absolute inset-0 rounded-2xl overflow-hidden"
               style={{
-                background: gradients[config.cardType],
+                background: gradient,
                 backfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
+                boxShadow: '0 32px 64px -12px rgba(20,52,203,0.55)',
               }}
             >
               <div className="w-full mt-8 h-10 bg-slate-900/60" />
@@ -202,15 +217,15 @@ export function CardPreview3D({ config }: Props) {
       </div>
 
       {/* MCC chips */}
-      {selectedMCCs.length > 0 && (
-        <div className="flex flex-wrap gap-2 justify-center">
+      {config.mccEnabled && selectedMCCs.length > 0 && (
+        <div className="flex flex-wrap gap-2 justify-center pt-2">
           {selectedMCCs.map(mcc => (
             <motion.div
               key={mcc.id}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
-              className="flex items-center gap-1 px-3 py-1 bg-[#1434CB]/10 border border-[#1434CB]/30 rounded-full text-xs font-medium text-[#1434CB]"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1434CB]/10 border border-[#1434CB]/30 rounded-full text-xs font-medium text-[#1434CB]"
             >
               <span>{mcc.icon}</span>
               {mcc.label}

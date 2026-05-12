@@ -111,27 +111,51 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
 
           {/* MCCs */}
           <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
-              Categorías de comercio permitidas (MCC)
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {MCC_CATEGORIES.map(cat => (
-                <button
-                  key={cat.id}
-                  onClick={() => toggleMcc(cat.id)}
-                  aria-pressed={config.mccs.includes(cat.id)}
-                  className={`p-3 rounded-xl border-2 text-left transition-all duration-200 ${
-                    config.mccs.includes(cat.id)
-                      ? 'border-[#1434CB] bg-[#1434CB]/5'
-                      : 'border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <p className="text-xl mb-1">{cat.icon}</p>
-                  <p className="font-semibold text-slate-900 text-xs">{cat.label}</p>
-                  <p className="text-[10px] text-slate-400">{cat.description}</p>
-                </button>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Categorías de comercio (MCC)
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {config.mccEnabled ? 'Restricción activa por categoría' : 'Sin restricción — todas las categorías permitidas'}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={config.mccEnabled}
+                onChange={v => update({ mccEnabled: v })}
+                label="Habilitar restricción MCC"
+              />
             </div>
+            <AnimatePresence initial={false}>
+              {config.mccEnabled && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    {MCC_CATEGORIES.map(cat => (
+                      <button
+                        key={cat.id}
+                        onClick={() => toggleMcc(cat.id)}
+                        aria-pressed={config.mccs.includes(cat.id)}
+                        className={`p-3 rounded-xl border-2 text-left transition-all duration-200 ${
+                          config.mccs.includes(cat.id)
+                            ? 'border-[#1434CB] bg-[#1434CB]/5'
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <p className="text-xl mb-1">{cat.icon}</p>
+                        <p className="font-semibold text-slate-900 text-xs">{cat.label}</p>
+                        <p className="text-[10px] text-slate-400">{cat.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </section>
 
           {/* Amount & limits */}
@@ -277,9 +301,6 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
               Vista previa de tarjeta
             </p>
             <CardPreview3D config={config} />
-            <p className="text-[10px] text-slate-400 text-center mt-4">
-              Mueva el cursor sobre la tarjeta para ver el efecto 3D
-            </p>
           </div>
         </div>
       </div>
@@ -297,8 +318,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
         </button>
         <button
           onClick={onNext}
-          disabled={config.mccs.length === 0}
-          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
         >
           Generar pre-aprobación
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

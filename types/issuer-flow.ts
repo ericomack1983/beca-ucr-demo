@@ -47,6 +47,7 @@ export interface MccCategory {
 
 export interface CardConfig {
   cardType: CardType;
+  mccEnabled: boolean;
   mccs: string[];
   monthlyAmount: number;
   deliveryType: DeliveryType;
@@ -67,6 +68,7 @@ export const DEFAULT_FILTERS: FilterState = {
 
 export const DEFAULT_CARD_CONFIG: CardConfig = {
   cardType: 'prepaid',
+  mccEnabled: false,
   mccs: ['education', 'food'],
   monthlyAmount: 150000,
   deliveryType: 'digital',
