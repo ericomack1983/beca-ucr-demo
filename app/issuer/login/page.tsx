@@ -58,7 +58,7 @@ export default function IssuerLoginPage() {
             <IssuerIcon />
           </div>
           <div>
-            <span className="font-bold text-white text-sm tracking-tight">Portal Emisor</span>
+            <span className="font-bold text-white text-sm tracking-tight">Portal Adm Universidad</span>
             <p className="text-[10px] text-amber-400/70 leading-none -mt-0.5">Banco Nacional de Costa Rica</p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function IssuerLoginPage() {
         <div className="relative flex gap-4 text-xs text-amber-100/30">
           <span>© 2026 BNCR</span>
           <span>·</span>
-          <span>Portal Emisor Demo</span>
+          <span>Portal Adm Universidad Demo</span>
         </div>
       </div>
 
@@ -115,7 +115,7 @@ export default function IssuerLoginPage() {
               <IssuerIcon />
             </div>
             <div>
-              <span className="font-bold text-slate-900 text-sm">Portal Emisor</span>
+              <span className="font-bold text-slate-900 text-sm">Portal Adm Universidad</span>
               <p className="text-[10px] text-slate-500 -mt-0.5">Banco Nacional de Costa Rica</p>
             </div>
           </div>

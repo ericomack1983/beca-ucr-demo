@@ -61,7 +61,7 @@ export default function Hero() {
               Tu futuro<br />
               empieza con una{" "}
               <span className="font-serif-editorial italic font-normal text-[#2563EB]">
-                Beca UCR
+                Beca Universidad Publica
               </span>
             </motion.h1>
 

@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       paymentAmount: amount ?? 500_000,
       currencyCode:  "188",           // ISO 4217: CRC — Costa Rican Colón
       invoiceNumber: `BECA-${carne}-2026`,
-      memo:          `Beca UCR — ${program}`,
+      memo:          `Beca Universidad Publica — ${program}`,
       validDays:     365,
     });
 

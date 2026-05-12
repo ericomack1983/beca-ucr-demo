@@ -1,0 +1,255 @@
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+export interface Ticket {
+  id: string;
+  name: string;
+  wallet: string;
+  timestamp: number;
+  amount: number;
+  last4: string;
+}
+
+interface Props {
+  recentIssuances: Ticket[];
+  totalDone: number;
+  totalStudents: number;
+  isRunning: boolean;
+}
+
+function formatCRC(n: number) {
+  return `₡${n.toLocaleString('es-CR')}`;
+}
+
+function VisaCardMini({ className = '' }: { className?: string }) {
+  return (
+    <div
+      className={`w-14 h-9 rounded-lg shadow-xl flex flex-col justify-between p-1.5 relative overflow-hidden shrink-0 ${className}`}
+      style={{ background: 'linear-gradient(135deg, #0d1b2a 0%, #1b4332 50%, #1B5E20 100%)' }}
+    >
+      <div
+        className="w-4 h-2.5 rounded-sm"
+        style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}
+      />
+      <div className="flex justify-end">
+        <svg width="20" height="6" viewBox="0 0 52 18" fill="none">
+          <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="white" />
+          <path d="M17 1H21V17H17V1Z" fill="white" />
+          <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="white" />
+        </svg>
+      </div>
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%)' }}
+      />
+    </div>
+  );
+}
+
+function BNCRNode({ isRunning }: { isRunning: boolean }) {
+  return (
+    <div className="flex flex-col items-center gap-2 shrink-0 w-[72px]">
+      <motion.div
+        className="w-12 h-12 rounded-xl flex items-center justify-center border"
+        style={{ background: 'rgba(27,94,32,0.15)', borderColor: 'rgba(74,222,128,0.3)' }}
+        animate={isRunning ? {
+          boxShadow: [
+            '0 0 0 0px rgba(74,222,128,0)',
+            '0 0 0 6px rgba(74,222,128,0.15)',
+            '0 0 0 0px rgba(74,222,128,0)',
+          ],
+        } : { boxShadow: '0 0 0 0 rgba(74,222,128,0)' }}
+        transition={{ duration: 1.8, repeat: isRunning ? Infinity : 0 }}
+      >
+        <svg width="30" height="10" viewBox="0 0 52 18" fill="none" aria-label="Visa">
+          <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="#4ade80" />
+          <path d="M17 1H21V17H17V1Z" fill="#4ade80" />
+          <path d="M23 12.5C23 12.5 25 14.5 27.5 14.5C29 14.5 30 13.8 30 12.8C30 11.5 28.5 11 27 10.3C25 9.4 23 8.2 23 5.8C23 3 25.5 0.7 29 0.7C31.5 0.7 33.5 1.8 33.5 1.8L32 4.8C32 4.8 30.5 3.8 29 3.8C27.8 3.8 27 4.4 27 5.2C27 6.3 28.5 6.8 30 7.5C32 8.4 34 9.8 34 12.5C34 15.5 31.5 17.5 27.5 17.5C24.5 17.5 22.5 16 22 15.5L23 12.5Z" fill="#4ade80" />
+          <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="#4ade80" />
+        </svg>
+      </motion.div>
+      <div className="text-center leading-tight">
+        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">EMISOR</p>
+        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">VISA</p>
+      </div>
+    </div>
+  );
+}
+
+function PortalNode({ totalDone }: { totalDone: number }) {
+  return (
+    <div className="flex flex-col items-center gap-2 shrink-0 w-[72px]">
+      <div className="relative">
+        <motion.div
+          key={totalDone}
+          className="w-12 h-12 rounded-xl flex items-center justify-center border"
+          style={{ background: 'rgba(59,130,246,0.1)', borderColor: 'rgba(96,165,250,0.3)' }}
+          animate={totalDone > 0 ? { scale: [1, 1.08, 1] } : {}}
+          transition={{ duration: 0.3 }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </motion.div>
+        <AnimatePresence>
+          {totalDone > 0 && (
+            <motion.div
+              key={totalDone}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full bg-blue-500 flex items-center justify-center px-1"
+            >
+              <span className="text-[8px] font-bold text-white">{totalDone}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="text-center leading-tight">
+        <p className="text-[9px] font-bold text-blue-400 font-mono tracking-wider">PORTAL</p>
+        <p className="text-[8px] text-blue-700 font-mono mt-0.5">Universidad Pública</p>
+      </div>
+    </div>
+  );
+}
+
+export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents, isRunning }: Props) {
+  const progress = totalStudents > 0 ? (totalDone / totalStudents) * 100 : 0;
+  const prevCountRef = useRef(0);
+  const [flyingCards, setFlyingCards] = useState<Array<{ key: string; delay: number }>>([]);
+
+  useEffect(() => {
+    const newCount = recentIssuances.length;
+    if (newCount > prevCountRef.current) {
+      const newItems = recentIssuances.slice(prevCountRef.current);
+      const additions = newItems.map((t, i) => ({ key: `${t.id}-${t.timestamp}`, delay: i * 0.12 }));
+      setFlyingCards(prev => [...prev, ...additions]);
+      newItems.forEach((t, i) => {
+        setTimeout(() => {
+          setFlyingCards(prev => prev.filter(c => c.key !== `${t.id}-${t.timestamp}`));
+        }, 1500 + i * 140);
+      });
+      prevCountRef.current = newCount;
+    }
+  }, [recentIssuances]);
+
+  return (
+    <div
+      className="relative rounded-2xl overflow-hidden"
+      style={{ background: 'linear-gradient(150deg, #080e18 0%, #0a1510 100%)' }}
+    >
+      {/* Grid overlay */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.045]">
+        <defs>
+          <pattern id="iss-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#94a3b8" strokeWidth="0.6" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#iss-grid)" />
+      </svg>
+
+      <div className="relative p-5 space-y-4">
+        {/* Three-node row */}
+        <div className="flex items-center gap-2">
+          <BNCRNode isRunning={isRunning} />
+
+          {/* Flight path */}
+          <div className="flex-1 relative h-14">
+            {/* Dashed connector */}
+            <div className="absolute inset-y-0 left-0 right-0 flex items-center">
+              <div className="flex-1 border-t border-dashed border-slate-700/70" />
+              <svg width="8" height="10" viewBox="0 0 8 10" className="shrink-0 text-slate-600">
+                <path d="M1 1l6 4-6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            {/* Flying Visa cards */}
+            <div className="absolute inset-0 overflow-hidden">
+              {flyingCards.map((fc) => (
+                <motion.div
+                  key={fc.key}
+                  className="absolute top-1/2"
+                  style={{ left: 0, translateY: '-50%' }}
+                  initial={{ x: 0, opacity: 0, scale: 0.65 }}
+                  animate={{ x: '100%', opacity: [0, 1, 1, 0], scale: [0.65, 1, 1, 0.75] }}
+                  transition={{ duration: 1.05, delay: fc.delay, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <VisaCardMini />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <PortalNode totalDone={totalDone} />
+        </div>
+
+        {/* Notification feed — last 3 confirmed */}
+        <div className="space-y-1.5 min-h-[60px]">
+          <AnimatePresence initial={false} mode="popLayout">
+            {recentIssuances.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center justify-center h-14"
+              >
+                <p className="text-[11px] text-slate-600 font-mono tracking-wider">
+                  Esperando inicio de emisión…
+                </p>
+              </motion.div>
+            ) : (
+              recentIssuances.slice(-3).reverse().map((t) => (
+                <motion.div
+                  key={t.id}
+                  layout
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 border"
+                  style={{ background: 'rgba(15,23,42,0.7)', borderColor: 'rgba(51,65,85,0.6)' }}
+                >
+                  <VisaCardMini />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-slate-200 truncate">{t.name}</p>
+                    <p className="text-[9px] text-slate-500 font-mono">•••• {t.last4} · {t.wallet}</p>
+                  </div>
+                  <div className="text-right shrink-0 space-y-0.5">
+                    <p className="text-[10px] font-bold text-emerald-400 font-mono">{formatCRC(t.amount)}</p>
+                    <div className="flex items-center justify-end gap-1">
+                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+                        <path d="M2 5l2 2 4-4" stroke="#60a5fa" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                      <p className="text-[9px] text-blue-400 font-mono">Univ. Pública</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Progress bar */}
+        <div>
+          <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: 'linear-gradient(90deg, #1B5E20, #4ade80)' }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
+          </div>
+          <div className="flex justify-between mt-1.5">
+            <span className="text-[9px] text-slate-600 font-mono">Lote recibido</span>
+            <span className="text-[10px] text-emerald-400 font-mono font-semibold">
+              {totalDone} / {totalStudents} emitidas
+            </span>
+            <span className="text-[9px] text-slate-600 font-mono">Portal notificado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
