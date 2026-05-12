@@ -16,7 +16,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Costa Rica Becas — Portal Nacional de Becas",
+  title: "BecasCR — Portal Nacional de Becas",
   description: "Portal oficial de solicitud de becas en Costa Rica. Democratizando el acceso a la educación superior.",
   icons: {
     icon: "/favicon.ico",
