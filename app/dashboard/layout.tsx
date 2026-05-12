@@ -16,18 +16,13 @@ export default function DashboardLayout({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = getSession();
-    if (!session) {
-      router.replace("/login");
-      return;
-    }
-    const stu = MOCK_STUDENTS.find((s) => s.id === session.studentId);
-    if (!stu) {
-      router.replace("/login");
-      return;
-    }
-    setStudent(stu);
-    setLoading(false);
+    getSession().then(session => {
+      if (!session) { router.replace("/login"); return; }
+      const stu = MOCK_STUDENTS.find(s => s.email === session.email)
+               ?? MOCK_STUDENTS[0];
+      setStudent(stu);
+      setLoading(false);
+    });
   }, [router]);
 
   if (loading) {

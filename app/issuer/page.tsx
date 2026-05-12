@@ -55,16 +55,14 @@ export default function IssuerPortalPage() {
   const batchRef = useRef(false);
 
   useEffect(() => {
-    const session = getIssuerSession();
-    if (!session) {
-      router.replace("/issuer/login");
-    } else {
-      setReady(true);
-    }
+    getIssuerSession().then(session => {
+      if (!session) router.replace("/issuer/login");
+      else setReady(true);
+    });
   }, [router]);
 
-  const handleLogout = () => {
-    issuerLogout();
+  const handleLogout = async () => {
+    await issuerLogout();
     router.push("/issuer/login");
   };
 

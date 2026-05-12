@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ChevronRight, ArrowLeft } from "lucide-react";
 import { getSession } from "@/lib/auth";
+import { MOCK_STUDENTS } from "@/lib/mock-students";
 import {
   getMessagesByStudentId,
   type Message,
@@ -25,10 +26,11 @@ export default function MensajesPage() {
   const [showList, setShowList] = useState(true);
 
   useEffect(() => {
-    const session = getSession();
-    if (!session) return;
-    const msgs = getMessagesByStudentId(session.studentId);
-    setMessages(msgs);
+    getSession().then(session => {
+      if (!session) return;
+      const mockId = (MOCK_STUDENTS.find(s => s.email === session.email) ?? MOCK_STUDENTS[0]).id;
+      setMessages(getMessagesByStudentId(mockId));
+    });
   }, []);
 
   useEffect(() => {

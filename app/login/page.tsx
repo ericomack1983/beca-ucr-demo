@@ -27,10 +27,9 @@ export default function LoginPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    const session = login(email, password);
+    const session = await login(email, password);
     if (!session) {
-      setError("Correo o contraseña incorrectos. Intente con maria@ucr.ac.cr / demo123");
+      setError("Correo o contraseña incorrectos. Verifique sus credenciales.");
       setLoading(false);
       return;
     }

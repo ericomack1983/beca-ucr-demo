@@ -17,15 +17,11 @@ export default function PerfilPage() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const session = getSession();
-    if (!session) return;
-    const stu = MOCK_STUDENTS.find((s) => s.id === session.studentId);
-    if (!stu) return;
-    setStudent(stu);
-    setForm({
-      name: stu.name,
-      phone: stu.phone,
-      faculty: stu.faculty,
+    getSession().then(session => {
+      if (!session) return;
+      const stu = MOCK_STUDENTS.find(s => s.email === session.email) ?? MOCK_STUDENTS[0];
+      setStudent(stu);
+      setForm({ name: stu.name, phone: stu.phone, faculty: stu.faculty });
     });
   }, []);
 

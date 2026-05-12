@@ -12,17 +12,18 @@ export function useAuth(requireAuth = true) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const s = getSession();
-    if (!s && requireAuth) {
-      router.replace("/login");
-      return;
-    }
-    if (s) {
-      setSession(s);
-      const stu = MOCK_STUDENTS.find((st) => st.id === s.studentId) || null;
-      setStudent(stu);
-    }
-    setLoading(false);
+    getSession().then(s => {
+      if (!s && requireAuth) {
+        router.replace("/login");
+        return;
+      }
+      if (s) {
+        setSession(s);
+        const stu = MOCK_STUDENTS.find(st => st.email === s.email) ?? MOCK_STUDENTS[0];
+        setStudent(stu);
+      }
+      setLoading(false);
+    });
   }, [router, requireAuth]);
 
   return { session, student, loading };

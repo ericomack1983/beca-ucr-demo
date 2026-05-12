@@ -30,11 +30,13 @@ export default function DocumentosPage() {
   const [studentId, setStudentId] = useState<string>("");
 
   useEffect(() => {
-    const session = getSession();
-    if (!session) return;
-    setStudentId(session.studentId);
-    const app = getApplicationByStudentId(session.studentId);
-    if (app) setDocuments(app.documents);
+    getSession().then(session => {
+      if (!session) return;
+      const mockId = (MOCK_STUDENTS.find(s => s.email === session.email) ?? MOCK_STUDENTS[0]).id;
+      setStudentId(mockId);
+      const app = getApplicationByStudentId(mockId);
+      if (app) setDocuments(app.documents);
+    });
   }, []);
 
   const handleUpload = async (docId: string) => {

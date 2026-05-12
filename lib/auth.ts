@@ -1,8 +1,6 @@
 "use client";
 
-import { authenticateStudent, type Student } from "./mock-students";
-
-const SESSION_KEY = "ucr_session";
+import { supabase } from './supabase';
 
 export interface Session {
   studentId: string;
@@ -11,41 +9,33 @@ export interface Session {
   token: string;
 }
 
-export function login(email: string, password: string): Session | null {
-  const student = authenticateStudent(email, password);
-  if (!student) return null;
-
-  const session: Session = {
-    studentId: student.id,
-    email: student.email,
-    name: student.name,
-    token: `mock_token_${student.id}_${Date.now()}`,
+export async function login(email: string, password: string): Promise<Session | null> {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.user || !data.session) return null;
+  return {
+    studentId: data.user.id,
+    email: data.user.email ?? email,
+    name: data.user.user_metadata?.full_name ?? data.user.email?.split('@')[0] ?? 'Estudiante',
+    token: data.session.access_token,
   };
-
-  if (typeof window !== "undefined") {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  }
-
-  return session;
 }
 
-export function logout(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(SESSION_KEY);
-  }
+export async function logout(): Promise<void> {
+  await supabase.auth.signOut();
 }
 
-export function getSession(): Session | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(SESSION_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as Session;
-  } catch {
-    return null;
-  }
+export async function getSession(): Promise<Session | null> {
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) return null;
+  const user = data.session.user;
+  return {
+    studentId: user.id,
+    email: user.email ?? '',
+    name: user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Estudiante',
+    token: data.session.access_token,
+  };
 }
 
-export function isAuthenticated(): boolean {
-  return getSession() !== null;
+export async function isAuthenticated(): Promise<boolean> {
+  return (await getSession()) !== null;
 }

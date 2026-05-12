@@ -20,10 +20,9 @@ export default function DashboardPage() {
   const [toast, setToast] = useState(false);
 
   useEffect(() => {
-    const session = getSession();
+    getSession().then(session => {
     if (!session) return;
-    const stu = MOCK_STUDENTS.find((s) => s.id === session.studentId);
-    if (!stu) return;
+    const stu = MOCK_STUDENTS.find(s => s.email === session.email) ?? MOCK_STUDENTS[0];
     setStudent(stu);
     const app = getApplicationByStudentId(stu.id);
     setApplication(app || null);
@@ -36,6 +35,7 @@ export default function DashboardPage() {
     if (hasActionRequired) {
       setTimeout(() => setToast(true), 1200);
     }
+    });
   }, []);
 
   if (!student) return null;

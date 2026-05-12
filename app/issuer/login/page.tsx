@@ -24,10 +24,9 @@ export default function IssuerLoginPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    const session = issuerLogin(email, password);
+    const session = await issuerLogin(email, password);
     if (!session) {
-      setError("Credenciales incorrectas. Use admin@banconal.fi.cr / issuer123");
+      setError("Credenciales incorrectas. Verifique su correo y contraseña.");
       setLoading(false);
       return;
     }
