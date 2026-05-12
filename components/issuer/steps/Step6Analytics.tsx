@@ -30,8 +30,8 @@ function arc(cx: number, cy: number, r: number, a0: number, a1: number) {
 /* ─── categories ─── */
 
 const CATS = [
-  { id: 'edu',   label: 'Educación',    color: '#1B5E20', pct: 35, yoy: +8.2  },
-  { id: 'food',  label: 'Alimentación', color: '#F59E0B', pct: 28, yoy: +12.4 },
+  { id: 'edu',   label: 'Educación',    color: '#1434CB', pct: 35, yoy: +8.2  },
+  { id: 'food',  label: 'Alimentación', color: '#FCC015', pct: 28, yoy: +12.4 },
   { id: 'trx',   label: 'Transporte',   color: '#3B82F6', pct: 18, yoy: +5.7  },
   { id: 'hlth',  label: 'Salud',        color: '#8B5CF6', pct: 12, yoy: +3.1  },
   { id: 'other', label: 'Otros',        color: '#94A3B8', pct: 7,  yoy: +1.5  },
@@ -119,8 +119,8 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
         style={{ overflow: 'visible' }}>
         <defs>
           <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1B5E20" stopOpacity={0.13} />
-            <stop offset="100%" stopColor="#1B5E20" stopOpacity={0} />
+            <stop offset="0%" stopColor="#1434CB" stopOpacity={0.13} />
+            <stop offset="100%" stopColor="#1434CB" stopOpacity={0} />
           </linearGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="blur" />
@@ -148,7 +148,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
         {MONTHS.map((m, i) => (
           <text key={m} x={PAD.l + (i / (MONTHS.length - 1)) * PW} y={CH - 5}
             textAnchor="middle" fontSize={9}
-            fill={hi === i ? '#1B5E20' : '#94a3b8'}
+            fill={hi === i ? '#1434CB' : '#94a3b8'}
             fontWeight={hi === i ? '700' : '400'}>
             {m}
           </text>
@@ -164,7 +164,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
         {hi !== null && (
           <rect x={curPts[hi][0] - PW / (MONTHS.length - 1) / 2} y={PAD.t}
             width={PW / (MONTHS.length - 1)} height={PH}
-            fill="#1B5E20" fillOpacity={0.04} rx={2} />
+            fill="#1434CB" fillOpacity={0.04} rx={2} />
         )}
 
         {/* prev line */}
@@ -175,7 +175,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
 
         {/* current line */}
         <motion.path d={pts2path(curPts)} fill="none"
-          stroke="#1B5E20" strokeWidth={2.5}
+          stroke="#1434CB" strokeWidth={2.5}
           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
           transition={{ duration: 1.4, delay: 0.15, ease: [0.16, 1, 0.3, 1] }} />
 
@@ -198,7 +198,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
         {curPts.map(([x, y], i) => (
           <motion.circle key={i} cx={x} cy={y}
             r={hi === i ? 7 : 3.5}
-            fill="#1B5E20" stroke="white" strokeWidth={hi === i ? 2.5 : 1.5}
+            fill="#1434CB" stroke="white" strokeWidth={hi === i ? 2.5 : 1.5}
             filter={hi === i ? 'url(#glow)' : undefined}
             initial={{ scale: 0 }} animate={{ scale: 1 }}
             transition={{ delay: 1.35 + i * 0.06 }} />
@@ -216,7 +216,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-[#1B5E20]" />
+                  <div className="w-2 h-2 rounded-full bg-[#1434CB]" />
                   <span className="text-[10px] text-slate-500">2026</span>
                 </div>
                 <span className="text-[11px] font-bold font-mono text-slate-900">{fmtM(cur[hi])}</span>
@@ -474,7 +474,7 @@ function PercentOfSpendChart() {
           {[
             { year: 2024 as ActiveYear, label: 'Ene (01) – Jun (06) 2024', icon: <rect x="0" y="2" width="10" height="10" rx="1" fill="#94a3b8" /> },
             { year: 2025 as ActiveYear, label: 'Ene (01) – Jun (06) 2025', icon: <circle cx="5" cy="7" r="5" fill="#475569" /> },
-            { year: 2026 as ActiveYear, label: 'Ene (01) – Jun (06) 2026', icon: <polygon points="5,0 11,12 -1,12" fill="#1B5E20" /> },
+            { year: 2026 as ActiveYear, label: 'Ene (01) – Jun (06) 2026', icon: <polygon points="5,0 11,12 -1,12" fill="#1434CB" /> },
           ].map(({ year, label, icon }) => (
             <button key={year} onClick={() => setActive(a => a === year ? null : year)}
               className={`flex items-center gap-2 text-xs transition-all rounded-lg px-2 py-1 w-full text-left ${
@@ -549,7 +549,7 @@ function PercentOfSpendChart() {
                 )}
                 {/* 2026 – triangle */}
                 {isVisible(2026) && (
-                  <Triangle cx={xp(d.y2026)} cy={cy} fill="#1B5E20"
+                  <Triangle cx={xp(d.y2026)} cy={cy} fill="#1434CB"
                     delay={0.65 + i * 0.08} />
                 )}
               </g>
@@ -677,8 +677,8 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
       {/* KPI row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <KpiCard label="Total desembolsado" to={semestralTotal} format={fmtM}
-          sub="Semestre 2026" color="text-[#1B5E20]" bgColor="#dcfce7" delay={0}
-          icon={<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1B5E20" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3.5a1.5 1.5 0 010 3H6"/></svg>} />
+          sub="Semestre 2026" color="text-[#1434CB]" bgColor="#EEF1FB" delay={0}
+          icon={<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1434CB" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M6 7h3.5a1.5 1.5 0 010 3H6"/></svg>} />
         <KpiCard label="Tarjetas activas" to={issuedCount} format={String}
           sub="Beneficiarios" color="text-blue-600" bgColor="#dbeafe" delay={0.07}
           icon={<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#2563eb" strokeWidth="1.5" strokeLinecap="round"><rect x="1" y="4" width="14" height="9" rx="1.5"/><path d="M1 7.5h14"/></svg>} />
@@ -699,7 +699,7 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
           </div>
           <div className="flex items-center gap-4 text-[10px] text-slate-500">
             <div className="flex items-center gap-1.5">
-              <svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#1B5E20" strokeWidth="2.5" /></svg>
+              <svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#1434CB" strokeWidth="2.5" /></svg>
               <span>2026</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -753,7 +753,7 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
             a.download = 'analytics-becas-2026.csv'; a.click();
             URL.revokeObjectURL(url);
           }}
-          className="px-6 py-2.5 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M8 3v7M5 7l3 3 3-3M3 13h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

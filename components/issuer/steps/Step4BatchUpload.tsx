@@ -123,7 +123,7 @@ export function Step4BatchUpload({
               <span className="text-sm text-slate-700 flex-1">{faculty}</span>
               <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-[#1B5E20] rounded-full"
+                  className="h-full bg-[#1434CB] rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${(count / selected.length) * 100}%` }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -209,7 +209,7 @@ export function Step4BatchUpload({
             <button
               onClick={onStartBatch}
               disabled={isRunning}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-semibold text-sm hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isRunning ? (
                 <>
@@ -235,7 +235,7 @@ export function Step4BatchUpload({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               onClick={onNext}
-              className="px-6 py-2.5 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
             >
               Chequear emisión digital
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

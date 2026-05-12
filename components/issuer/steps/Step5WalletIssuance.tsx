@@ -124,7 +124,7 @@ function PhaseIndicator({ isRunning, allDone, totalDone, totalStudents }: PhaseP
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-7 h-7 rounded-full bg-[#1B5E20] flex items-center justify-center shadow-sm"
+                    className="w-7 h-7 rounded-full bg-[#1434CB] flex items-center justify-center shadow-sm"
                   >
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -143,7 +143,7 @@ function PhaseIndicator({ isRunning, allDone, totalDone, totalStudents }: PhaseP
                 )}
               </div>
               <div className="text-center">
-                <p className={`text-[10px] font-bold leading-tight ${phase.done ? 'text-[#1B5E20]' : phase.active ? 'text-amber-600' : 'text-slate-400'}`}>
+                <p className={`text-[10px] font-bold leading-tight ${phase.done ? 'text-[#1434CB]' : phase.active ? 'text-amber-600' : 'text-slate-400'}`}>
                   {phase.label}
                 </p>
                 <p className="text-[9px] text-slate-400 mt-0.5">{phase.sublabel}</p>
@@ -151,7 +151,7 @@ function PhaseIndicator({ isRunning, allDone, totalDone, totalStudents }: PhaseP
             </div>
             {i < phases.length - 1 && (
               <div className="flex-1 mt-3.5 mx-1">
-                <div className={`h-px ${phases[i + 1].done || phases[i + 1].active ? 'bg-[#1B5E20]/40' : 'bg-slate-200'}`} />
+                <div className={`h-px ${phases[i + 1].done || phases[i + 1].active ? 'bg-[#1434CB]/40' : 'bg-slate-200'}`} />
               </div>
             )}
           </React.Fragment>
@@ -259,7 +259,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-[#1B5E20] rounded-full"
+                className="h-full bg-[#1434CB] rounded-full"
                 animate={{ width: selected.length > 0 ? `${(totalDone / selected.length) * 100}%` : '0%' }}
                 transition={{ duration: 0.4 }}
               />
@@ -291,7 +291,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
                     <div className="flex items-center gap-1.5">
                       <div
                         className="w-11 h-7 rounded-md shrink-0 flex items-center justify-center relative overflow-hidden"
-                        style={{ background: 'linear-gradient(135deg, #0d1b2a 0%, #1b4332 60%, #1B5E20 100%)' }}
+                        style={{ background: 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 60%, #1434CB 100%)' }}
                       >
                         <span
                           className="text-white select-none leading-none"
@@ -340,7 +340,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={onNext}
-              className="px-6 py-2.5 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
                 <path d="M2 8h10M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

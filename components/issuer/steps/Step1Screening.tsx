@@ -54,7 +54,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
           <span className="text-base">{icon}</span>
           <span className="text-sm font-semibold text-slate-700">{label}</span>
         </div>
-        <span className="text-xs font-bold text-[#1B5E20]">{count}/{total}</span>
+        <span className="text-xs font-bold text-[#1434CB]">{count}/{total}</span>
       </div>
       <div className="flex items-center gap-2">
         <div className="flex-1 space-y-1">
@@ -66,7 +66,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
             step={step}
             value={valueMin}
             onChange={(e) => onChange(parseFloat(e.target.value) || min, valueMax)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1B5E20] focus:ring-1 focus:ring-[#1B5E20]/20"
+            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
             aria-label={`${label} mínimo`}
           />
         </div>
@@ -79,7 +79,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
             step={step}
             value={valueMax}
             onChange={(e) => onChange(valueMin, parseFloat(e.target.value) || max)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1B5E20] focus:ring-1 focus:ring-[#1B5E20]/20"
+            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
             aria-label={`${label} máximo`}
           />
         </div>
@@ -168,19 +168,19 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
           />
 
           <motion.div
-            className="bg-[#1B5E20]/5 border border-[#1B5E20]/20 rounded-xl px-4 py-3 text-center"
+            className="bg-[#1434CB]/5 border border-[#1434CB]/20 rounded-xl px-4 py-3 text-center"
             key={qualifying.length}
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 0.3 }}
           >
-            <span className="text-3xl font-black text-[#1B5E20]">{qualifying.length}</span>
+            <span className="text-3xl font-black text-[#1434CB]">{qualifying.length}</span>
             <span className="text-lg text-slate-400"> / {students.length}</span>
             <p className="text-xs text-slate-500 mt-0.5">califican con estos filtros</p>
           </motion.div>
 
           <button
             onClick={handleApply}
-            className="w-full py-3 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all"
+            className="w-full py-3 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all"
           >
             Aplicar filtros
           </button>
@@ -195,7 +195,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
                   type="checkbox"
                   checked={allSelected}
                   onChange={e => onSelectAll(e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#1B5E20]"
+                  className="w-4 h-4 rounded accent-[#1434CB]"
                   aria-label="Seleccionar todos"
                 />
                 <span className="text-sm text-slate-600">Seleccionar todos</span>
@@ -204,7 +204,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
                 key={selected.length}
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
-                className="text-sm font-bold text-[#1B5E20]"
+                className="text-sm font-bold text-[#1434CB]"
               >
                 {selected.length} seleccionados
               </motion.span>
@@ -240,7 +240,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
                     type="checkbox"
                     checked={s.selected}
                     onChange={e => onSelectionChange(s.id, e.target.checked)}
-                    className="w-4 h-4 rounded accent-[#1B5E20] shrink-0"
+                    className="w-4 h-4 rounded accent-[#1434CB] shrink-0"
                     aria-label={`Seleccionar ${s.name}`}
                   />
 
@@ -281,7 +281,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
             <button
               onClick={onNext}
               disabled={selected.length === 0}
-              className="px-6 py-3 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               Continuar con {selected.length} estudiante{selected.length !== 1 ? 's' : ''}
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

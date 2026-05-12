@@ -27,11 +27,11 @@ function VisaCardMini({ className = '' }: { className?: string }) {
   return (
     <div
       className={`w-14 h-9 rounded-lg shadow-xl flex flex-col justify-between p-1.5 relative overflow-hidden shrink-0 ${className}`}
-      style={{ background: 'linear-gradient(135deg, #0d1b2a 0%, #1b4332 50%, #1B5E20 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 50%, #1434CB 100%)' }}
     >
       <div
         className="w-4 h-2.5 rounded-sm"
-        style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}
+        style={{ background: 'linear-gradient(135deg, #FCC015, #e6ac00)' }}
       />
       <div className="flex justify-end">
         <span
@@ -87,7 +87,7 @@ function BNCRNode({ isRunning }: { isRunning: boolean }) {
         </span>
       </motion.div>
       <div className="text-center leading-tight">
-        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">Visa Emisor</p>
+        <p className="text-[9px] font-bold text-[#FCC015] font-mono tracking-wider">Visa Emisor</p>
       </div>
     </div>
   );
@@ -232,7 +232,7 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
                     <p className="text-[9px] text-slate-500 font-mono">•••• {t.last4} · {t.wallet}</p>
                   </div>
                   <div className="text-right shrink-0 space-y-0.5">
-                    <p className="text-[10px] font-bold text-emerald-400 font-mono">{formatCRC(t.amount)}</p>
+                    <p className="text-[10px] font-bold text-[#FCC015] font-mono">{formatCRC(t.amount)}</p>
                     <div className="flex items-center justify-end gap-1">
                       <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
                         <path d="M2 5l2 2 4-4" stroke="#60a5fa" strokeWidth="1.5" strokeLinecap="round" />
@@ -251,14 +251,14 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
           <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #1B5E20, #4ade80)' }}
+              style={{ background: 'linear-gradient(90deg, #1434CB, #4d7fff)' }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
             />
           </div>
           <div className="flex justify-between mt-1.5">
             <span className="text-[9px] text-slate-600 font-mono">Lote recibido</span>
-            <span className="text-[10px] text-emerald-400 font-mono font-semibold">
+            <span className="text-[10px] text-[#FCC015] font-mono font-semibold">
               {totalDone} / {totalStudents} emitidas
             </span>
             <span className="text-[9px] text-slate-600 font-mono">Portal notificado</span>

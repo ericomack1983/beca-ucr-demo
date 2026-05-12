@@ -48,8 +48,8 @@ function ToggleSwitch({ checked, onChange, label }: { checked: boolean; onChange
       aria-checked={checked}
       aria-label={label}
       onClick={() => onChange(!checked)}
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1B5E20]/30 ${
-        checked ? 'bg-[#1B5E20]' : 'bg-slate-200'
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1434CB]/30 ${
+        checked ? 'bg-[#1434CB]' : 'bg-slate-200'
       }`}
     >
       <motion.div
@@ -94,7 +94,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   onClick={() => update({ cardType: type })}
                   className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                     config.cardType === type
-                      ? 'border-[#1B5E20] bg-[#1B5E20]/5'
+                      ? 'border-[#1434CB] bg-[#1434CB]/5'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                   aria-pressed={config.cardType === type}
@@ -122,7 +122,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   aria-pressed={config.mccs.includes(cat.id)}
                   className={`p-3 rounded-xl border-2 text-left transition-all duration-200 ${
                     config.mccs.includes(cat.id)
-                      ? 'border-[#1B5E20] bg-[#1B5E20]/5'
+                      ? 'border-[#1434CB] bg-[#1434CB]/5'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -154,7 +154,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                     step={1000}
                     value={config.monthlyAmount}
                     onChange={e => update({ monthlyAmount: parseInt(e.target.value) || 0 })}
-                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1B5E20] focus:ring-1 focus:ring-[#1B5E20]/20 font-mono"
+                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
                     aria-label="Monto mensual en colones"
                   />
                 </div>
@@ -174,7 +174,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                     step={1000}
                     value={config.dailyLimit}
                     onChange={e => update({ dailyLimit: parseInt(e.target.value) || 0 })}
-                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1B5E20] focus:ring-1 focus:ring-[#1B5E20]/20 font-mono"
+                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
                     aria-label="Límite diario en colones"
                   />
                 </div>
@@ -196,7 +196,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   aria-pressed={config.deliveryType === opt.id}
                   className={`w-full p-3 rounded-xl border-2 text-left transition-all duration-200 flex items-center gap-3 ${
                     config.deliveryType === opt.id
-                      ? 'border-[#1B5E20] bg-[#1B5E20]/5'
+                      ? 'border-[#1434CB] bg-[#1434CB]/5'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -209,7 +209,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="ml-auto w-5 h-5 rounded-full bg-[#1B5E20] flex items-center justify-center shrink-0"
+                      className="ml-auto w-5 h-5 rounded-full bg-[#1434CB] flex items-center justify-center shrink-0"
                     >
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                         <path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
@@ -235,7 +235,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   id="validity"
                   value={config.validity}
                   onChange={e => update({ validity: e.target.value as ValidityPeriod })}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1B5E20] bg-white"
+                  className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] bg-white"
                 >
                   {VALIDITY_OPTIONS.map(o => (
                     <option key={o.id} value={o.id}>{o.label}</option>
@@ -298,7 +298,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
         <button
           onClick={onNext}
           disabled={config.mccs.length === 0}
-          className="px-6 py-2.5 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Generar pre-aprobación
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

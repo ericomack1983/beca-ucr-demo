@@ -24,7 +24,7 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
       {/* Track */}
       <div className="absolute top-7 left-0 right-0 h-0.5 bg-slate-200 z-0" />
       <motion.div
-        className="absolute top-7 left-0 h-0.5 bg-[#1B5E20] z-0 origin-left"
+        className="absolute top-7 left-0 h-0.5 bg-[#1434CB] z-0 origin-left"
         animate={{ width: `${pct}%` }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       />
@@ -43,8 +43,8 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
           >
             <motion.div
               animate={{
-                backgroundColor: isDone ? '#1B5E20' : isActive ? '#2E7D32' : '#F1F5F9',
-                borderColor: isActive || isDone ? '#1B5E20' : '#E2E8F0',
+                backgroundColor: isDone ? '#1434CB' : isActive ? '#1232b8' : '#F1F5F9',
+                borderColor: isActive || isDone ? '#1434CB' : '#E2E8F0',
                 scale: isActive ? 1.12 : 1,
               }}
               transition={{ duration: 0.3 }}
@@ -62,7 +62,7 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
             </motion.div>
             <div className="text-center hidden sm:block min-w-[72px]">
               <p className={`text-[11px] font-bold leading-none transition-colors ${
-                isActive ? 'text-[#1B5E20]' : isDone ? 'text-emerald-600' : 'text-slate-400'
+                isActive ? 'text-[#1434CB]' : isDone ? 'text-[#1434CB]' : 'text-slate-400'
               }`}>
                 {step.label}
               </p>

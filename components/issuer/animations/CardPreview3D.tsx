@@ -66,7 +66,7 @@ export function CardPreview3D({ config }: Props) {
   const isPhysical = config.deliveryType === 'digital_physical';
   const gradients: Record<string, string> = {
     debit: 'linear-gradient(135deg, #1a2fd4 0%, #2346e8 55%, #2b5af5 100%)',
-    prepaid: 'linear-gradient(135deg, #0d1b2a 0%, #1b4332 50%, #1B5E20 100%)',
+    prepaid: 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 50%, #1434CB 100%)',
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -210,7 +210,7 @@ export function CardPreview3D({ config }: Props) {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
-              className="flex items-center gap-1 px-3 py-1 bg-[#1B5E20]/10 border border-[#1B5E20]/30 rounded-full text-xs font-medium text-[#1B5E20]"
+              className="flex items-center gap-1 px-3 py-1 bg-[#1434CB]/10 border border-[#1434CB]/30 rounded-full text-xs font-medium text-[#1434CB]"
             >
               <span>{mcc.icon}</span>
               {mcc.label}

@@ -32,7 +32,7 @@ function AnimatedCounter({ target, label, color }: { target: number; label: stri
   );
 }
 
-const CONFETTI_COLORS = ['#1B5E20', '#FFC107', '#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
+const CONFETTI_COLORS = ['#1434CB', '#FCC015', '#10B981', '#3B82F6', '#FCC015', '#EF4444', '#8B5CF6'];
 
 function Particle({ i }: { i: number }) {
   const angle = (i / 24) * Math.PI * 2;
@@ -60,7 +60,7 @@ export function SuccessBurst({ totalIssued, totalAmount }: Props) {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
-      className="relative bg-gradient-to-br from-[#1B5E20]/10 to-emerald-50 rounded-3xl border border-emerald-200 p-8 text-center overflow-hidden"
+      className="relative bg-gradient-to-br from-[#1434CB]/10 to-[#EEF1FB] rounded-3xl border border-[#1434CB]/20 p-8 text-center overflow-hidden"
     >
       {/* Confetti particles */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
@@ -71,7 +71,7 @@ export function SuccessBurst({ totalIssued, totalAmount }: Props) {
 
       {/* Checkmark */}
       <motion.div
-        className="relative mx-auto w-20 h-20 rounded-full bg-[#1B5E20] flex items-center justify-center shadow-xl shadow-emerald-900/20 mb-6"
+        className="relative mx-auto w-20 h-20 rounded-full bg-[#1434CB] flex items-center justify-center shadow-xl shadow-[#1434CB]/20 mb-6"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }}
@@ -99,7 +99,7 @@ export function SuccessBurst({ totalIssued, totalAmount }: Props) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-2xl font-black text-[#1B5E20] mb-1"
+        className="text-2xl font-black text-[#1434CB] mb-1"
       >
         ¡Lote emitido exitosamente!
       </motion.h3>
@@ -116,11 +116,11 @@ export function SuccessBurst({ totalIssued, totalAmount }: Props) {
         <AnimatedCounter
           target={totalIssued}
           label="Tarjetas emitidas"
-          color="text-[#1B5E20]"
+          color="text-[#1434CB]"
         />
         <div className="text-center">
           <motion.p
-            className="text-3xl font-black text-amber-600"
+            className="text-3xl font-black text-[#FCC015]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.6 }}
@@ -135,7 +135,7 @@ export function SuccessBurst({ totalIssued, totalAmount }: Props) {
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
-          background: 'radial-gradient(circle at 50% 40%, #1B5E20 0%, transparent 70%)',
+          background: 'radial-gradient(circle at 50% 40%, #1434CB 0%, transparent 70%)',
         }}
       />
     </motion.div>

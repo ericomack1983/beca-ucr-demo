@@ -151,8 +151,8 @@ export default function IssuerPortalPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#1B5E20] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-[#1434CB] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -163,7 +163,7 @@ export default function IssuerPortalPage() {
       <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#1B5E20] flex items-center justify-center shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-[#1434CB] flex items-center justify-center shadow-md">
               <IssuerGridIcon />
             </div>
             <div>
@@ -178,8 +178,8 @@ export default function IssuerPortalPage() {
 
           <div className="flex items-center gap-6">
             <div className="hidden sm:flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[11px] text-emerald-600 font-semibold">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#FCC015] animate-pulse" />
+              <span className="text-[11px] text-[#1434CB] font-semibold">
                 Motor activo
               </span>
             </div>
@@ -213,7 +213,7 @@ export default function IssuerPortalPage() {
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-[#1B5E20] flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-[#1434CB] flex items-center justify-center">
                 <span className="text-white text-xs font-black">{currentStep}</span>
               </div>
               <h2 className="text-lg font-bold text-slate-900">

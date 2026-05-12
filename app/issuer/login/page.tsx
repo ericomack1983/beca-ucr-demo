@@ -44,38 +44,38 @@ export default function IssuerLoginPage() {
       {/* Left brand panel */}
       <div
         className="hidden lg:flex flex-col justify-between p-12 relative overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #1a0a00 0%, #2d1500 50%, #92400e 100%)" }}
+        style={{ background: "linear-gradient(160deg, #0a0e2e 0%, #1434CB 60%, #1a3de8 100%)" }}
       >
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(circle, #FCC015 0%, transparent 70%)" }} />
         <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #FBBF24 0%, transparent 70%)" }} />
+          style={{ background: "radial-gradient(circle, #FCC015 0%, transparent 70%)" }} />
 
         {/* Logo */}
         <div className="relative flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-900/50">
+          <div className="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center shadow-lg">
             <IssuerIcon />
           </div>
           <div>
             <span className="font-bold text-white text-sm tracking-tight">Portal Adm Universidad</span>
-            <p className="text-[10px] text-amber-400/70 leading-none -mt-0.5">Banco Nacional de Costa Rica</p>
+            <p className="text-[10px] text-white/50 leading-none -mt-0.5">Banco Nacional de Costa Rica</p>
           </div>
         </div>
 
         {/* Center content */}
         <div className="relative space-y-6">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-px bg-amber-500/50" />
-            <span className="text-xs text-amber-400/60 uppercase tracking-widest font-semibold">
+            <div className="w-8 h-px bg-[#FCC015]/60" />
+            <span className="text-xs text-[#FCC015]/80 uppercase tracking-widest font-semibold">
               Motor de Riesgo v2.1
             </span>
           </div>
           <h2 className="text-3xl font-bold text-white leading-snug">
             Evaluación inteligente<br />
-            <span className="text-amber-400">de solicitudes</span><br />
+            <span className="text-[#FCC015]">de solicitudes</span><br />
             de becas
           </h2>
-          <p className="text-amber-100/40 text-sm leading-relaxed max-w-xs">
+          <p className="text-white/40 text-sm leading-relaxed max-w-xs">
             Plataforma de análisis socioeconómico para la revisión y aprobación de financiamiento estudiantil.
           </p>
 
@@ -86,14 +86,14 @@ export default function IssuerLoginPage() {
               "Auditoría completa de decisiones",
             ].map((item) => (
               <div key={item} className="flex items-center gap-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                <span className="text-sm text-amber-100/60">{item}</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#FCC015] shrink-0" />
+                <span className="text-sm text-white/60">{item}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative flex gap-4 text-xs text-amber-100/30">
+        <div className="relative flex gap-4 text-xs text-white/30">
           <span>© 2026 BNCR</span>
           <span>·</span>
           <span>Portal Adm Universidad Demo</span>
@@ -101,7 +101,7 @@ export default function IssuerLoginPage() {
       </div>
 
       {/* Right form */}
-      <div className="flex items-center justify-center p-8 bg-[#FAF7F2]">
+      <div className="flex items-center justify-center p-8 bg-white">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -110,7 +110,7 @@ export default function IssuerLoginPage() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#1434CB] flex items-center justify-center">
               <IssuerIcon />
             </div>
             <div>
@@ -121,12 +121,12 @@ export default function IssuerLoginPage() {
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 mb-1">
-              <Shield className="w-4 h-4 text-amber-600" />
-              <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">
+              <Shield className="w-4 h-4 text-[#1434CB]" />
+              <span className="text-xs font-semibold text-[#1434CB] uppercase tracking-wider">
                 Acceso restringido
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-2xl font-bold text-black tracking-tight">
               Ingreso al portal emisor
             </h1>
             <p className="text-sm text-slate-500">
@@ -135,13 +135,13 @@ export default function IssuerLoginPage() {
           </div>
 
           {/* Demo credential */}
-          <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 space-y-2">
-            <p className="text-xs font-semibold text-amber-800 uppercase tracking-wider">
+          <div className="bg-[#FCC015]/10 border border-[#FCC015]/30 rounded-2xl p-4 space-y-2">
+            <p className="text-xs font-semibold text-black uppercase tracking-wider">
               Credencial demo
             </p>
             <button
               onClick={fillDemo}
-              className="text-xs px-3 py-1.5 bg-white border border-amber-200 text-amber-700 rounded-full hover:bg-amber-50 transition-colors font-medium"
+              className="text-xs px-3 py-1.5 bg-white border border-[#1434CB]/20 text-[#1434CB] rounded-full hover:bg-[#1434CB]/5 transition-colors font-medium"
             >
               Admin BN · admin@banconal.fi.cr
             </button>
@@ -197,7 +197,7 @@ export default function IssuerLoginPage() {
 
             <Button
               type="submit"
-              className="w-full rounded-xl h-12 text-base bg-amber-600 hover:bg-amber-700"
+              className="w-full rounded-xl h-12 text-base bg-[#1434CB] hover:bg-[#1232b8]"
               disabled={loading}
             >
               {loading ? (

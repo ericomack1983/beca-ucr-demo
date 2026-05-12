@@ -50,8 +50,8 @@ function DocumentRow({
         aria-label={`Verificar: ${label}`}
         className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
           isVerified
-            ? 'bg-[#1B5E20] border-[#1B5E20]'
-            : 'border-slate-300 hover:border-[#1B5E20]'
+            ? 'bg-[#1434CB] border-[#1434CB]'
+            : 'border-slate-300 hover:border-[#1434CB]'
         }`}
       >
         <AnimatePresence>
@@ -87,7 +87,7 @@ function DropZone({ onDrop }: { onDrop: () => void }) {
       onClick={onDrop}
       className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-200 ${
         dragging
-          ? 'border-[#1B5E20] bg-[#1B5E20]/5 scale-105'
+          ? 'border-[#1434CB] bg-[#1434CB]/5 scale-105'
           : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
       }`}
       role="button"
@@ -261,7 +261,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
         </div>
         <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
           <motion.div
-            className={`h-full rounded-full transition-colors ${allComplete ? 'bg-emerald-500' : 'bg-[#1B5E20]'}`}
+            className={`h-full rounded-full transition-colors ${allComplete ? 'bg-emerald-500' : 'bg-[#1434CB]'}`}
             animate={{ width: `${globalProgress}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
@@ -305,7 +305,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
         <button
           onClick={onNext}
           disabled={!allComplete}
-          className="px-6 py-2.5 bg-[#1B5E20] text-white rounded-xl font-semibold text-sm hover:bg-[#2E7D32] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Configurar tarjeta
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
