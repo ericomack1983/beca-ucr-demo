@@ -217,7 +217,7 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
             ) : (
               recentIssuances.slice(-3).reverse().map((t) => (
                 <motion.div
-                  key={t.id}
+                  key={`${t.id}-${t.timestamp}`}
                   layout
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
