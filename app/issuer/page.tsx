@@ -22,6 +22,7 @@ import { Step2Requirements } from "@/components/issuer/steps/Step2Requirements";
 import { Step3CardConfig } from "@/components/issuer/steps/Step3CardConfig";
 import { Step4BatchUpload } from "@/components/issuer/steps/Step4BatchUpload";
 import { Step5WalletIssuance } from "@/components/issuer/steps/Step5WalletIssuance";
+import { Step6Analytics } from "@/components/issuer/steps/Step6Analytics";
 
 // Batch simulation timings
 const BATCH_SEQUENCE: { phase: BatchPhase; durationMs: number }[] = [
@@ -38,6 +39,7 @@ const STEP_TITLES = [
   "Configuración de tarjeta",
   "Pre-aprobación y lote bancario",
   "Emisión digital e integración wallets",
+  "Analytics — Fondos de Becas del Gobierno",
 ];
 
 export default function IssuerPortalPage() {
@@ -146,7 +148,7 @@ export default function IssuerPortalPage() {
     if (step < currentStep) setCurrentStep(step);
   };
 
-  const nextStep = () => setCurrentStep((s) => Math.min(s + 1, 5));
+  const nextStep = () => setCurrentStep((s) => Math.min(s + 1, 6));
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
   if (!ready) {
@@ -269,6 +271,15 @@ export default function IssuerPortalPage() {
                 students={students}
                 cardConfig={cardConfig}
                 onStatusChange={handleIssuanceStatus}
+                onBack={prevStep}
+                onNext={nextStep}
+              />
+            )}
+
+            {currentStep === 6 && (
+              <Step6Analytics
+                students={students}
+                cardConfig={cardConfig}
                 onBack={prevStep}
               />
             )}

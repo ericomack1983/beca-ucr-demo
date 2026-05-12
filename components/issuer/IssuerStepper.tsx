@@ -8,6 +8,7 @@ const STEPS = [
   { number: 3, label: 'Configuración', sublabel: 'Tarjeta' },
   { number: 4, label: 'Pre-Aprobación', sublabel: 'Lote bancario' },
   { number: 5, label: 'Emisión', sublabel: 'Wallets' },
+  { number: 6, label: 'Analytics', sublabel: 'Reportes' },
 ];
 
 interface Props {
