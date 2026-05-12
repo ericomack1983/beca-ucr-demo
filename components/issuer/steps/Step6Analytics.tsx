@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import type { FlowStudent, CardConfig } from '@/types/issuer-flow';
 
@@ -40,6 +40,17 @@ const CATS = [
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
 const CUR_F  = [0.95, 1.02, 0.97, 1.06, 1.03, 1.09];
 const PREV_F = [0.80, 0.83, 0.86, 0.84, 0.89, 0.91];
+
+// percent-of-spend data per year
+const PCT_DATA: Record<string, { y2024: number; y2025: number; y2026: number }> = {
+  edu:   { y2024: 29, y2025: 32, y2026: 35 },
+  food:  { y2024: 23, y2025: 26, y2026: 28 },
+  trx:   { y2024: 15, y2025: 17, y2026: 18 },
+  hlth:  { y2024: 10, y2025: 11, y2026: 12 },
+  other: { y2024: 6,  y2025: 7,  y2026: 7  },
+};
+
+type ActiveYear = 2024 | 2025 | 2026 | null;
 
 /* ─── AnimatedCounter ─── */
 
@@ -241,6 +252,168 @@ function CategoryTable({ total }: { total: number }) {
   );
 }
 
+/* ─── Percent-of-spend dot-plot ─── */
+
+const CW2 = 580; const LEFT2 = 130; const RIGHT2 = 16; const TOP2 = 36;
+const ROW2 = 40; const PLOT2 = CW2 - LEFT2 - RIGHT2; const MAX_PCT = 40;
+
+function PercentOfSpendChart() {
+  const [active, setActive] = useState<ActiveYear>(null);
+
+  const years: { key: 'y2024' | 'y2025' | 'y2026'; label: string; year: ActiveYear }[] = [
+    { key: 'y2024', label: 'Ene (01) – Jun (06) 2024', year: 2024 },
+    { key: 'y2025', label: 'Ene (01) – Jun (06) 2025', year: 2025 },
+    { key: 'y2026', label: 'Ene (01) – Jun (06) 2026', year: 2026 },
+  ];
+
+  const xp = (pct: number) => LEFT2 + (pct / MAX_PCT) * PLOT2;
+  const CHART_H = TOP2 + CATS.length * ROW2 + 8;
+  const gridPcts = [0, 10, 20, 30, 40];
+
+  function Square({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+    return (
+      <motion.rect x={cx - 5} y={cy - 5} width={10} height={10}
+        fill={fill} rx={1}
+        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: `${cx}px ${cy}px` }}
+      />
+    );
+  }
+  function Circle({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+    return (
+      <motion.circle cx={cx} cy={cy} r={5.5} fill={fill}
+        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: `${cx}px ${cy}px` }}
+      />
+    );
+  }
+  function Triangle({ cx, cy, fill, delay }: { cx: number; cy: number; fill: string; delay: number }) {
+    const pts = `${cx},${cy - 6.5} ${cx + 6},${cy + 5} ${cx - 6},${cy + 5}`;
+    return (
+      <motion.polygon points={pts} fill={fill}
+        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: `${cx}px ${cy}px` }}
+      />
+    );
+  }
+
+  const isVisible = (yr: ActiveYear) => active === null || active === yr;
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
+        <div>
+          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Porcentaje de gasto</p>
+          <p className="text-sm font-bold text-slate-900 mt-0.5">Distribución por categoría MCC</p>
+          <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
+            Porcentaje del gasto total acumulado por categoría. Haga clic en un año para resaltarlo.
+          </p>
+        </div>
+        {/* Year selector */}
+        <div className="shrink-0 space-y-2">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Seleccionar año</p>
+            {active !== null && (
+              <button onClick={() => setActive(null)}
+                className="text-[9px] font-bold text-slate-400 hover:text-slate-700 uppercase tracking-wider border border-slate-200 rounded px-2 py-0.5 transition-colors">
+                Limpiar
+              </button>
+            )}
+          </div>
+          {[
+            { year: 2024 as ActiveYear, label: 'Ene (01) – Jun (06) 2024', icon: <rect x="0" y="2" width="10" height="10" rx="1" fill="#94a3b8" /> },
+            { year: 2025 as ActiveYear, label: 'Ene (01) – Jun (06) 2025', icon: <circle cx="5" cy="7" r="5" fill="#475569" /> },
+            { year: 2026 as ActiveYear, label: 'Ene (01) – Jun (06) 2026', icon: <polygon points="5,0 11,12 -1,12" fill="#1B5E20" /> },
+          ].map(({ year, label, icon }) => (
+            <button key={year} onClick={() => setActive(a => a === year ? null : year)}
+              className={`flex items-center gap-2 text-xs transition-all rounded-lg px-2 py-1 w-full text-left ${
+                active === year ? 'bg-slate-100 font-bold text-slate-900' : 'text-slate-500 hover:bg-slate-50'
+              }`}>
+              <svg width="12" height="14" viewBox="-2 0 14 14">{icon}</svg>
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* SVG chart */}
+      <div className="w-full overflow-x-auto">
+        <svg width="100%" viewBox={`0 0 ${CW2} ${CHART_H}`} preserveAspectRatio="xMidYMid meet"
+          style={{ minWidth: 360 }}>
+          {/* Grid lines + top axis labels */}
+          {gridPcts.map(pct => (
+            <g key={pct}>
+              <line x1={xp(pct)} y1={TOP2 - 6} x2={xp(pct)} y2={CHART_H - 4}
+                stroke={pct === 0 ? '#e2e8f0' : '#f1f5f9'} strokeWidth={1} />
+              <text x={xp(pct)} y={TOP2 - 10} textAnchor="middle"
+                fontSize={10} fill="#94a3b8" fontFamily="monospace">
+                {pct}%
+              </text>
+            </g>
+          ))}
+
+          {/* Rows */}
+          {CATS.map((cat, i) => {
+            const d = PCT_DATA[cat.id];
+            const cy = TOP2 + i * ROW2 + ROW2 / 2;
+            const maxV = Math.max(
+              isVisible(2024) ? d.y2024 : 0,
+              isVisible(2025) ? d.y2025 : 0,
+              isVisible(2026) ? d.y2026 : 0,
+            );
+            const lineEnd = isVisible(null) ? Math.max(d.y2024, d.y2025, d.y2026) : maxV;
+
+            return (
+              <g key={cat.id}>
+                {/* Row separator */}
+                <line x1={LEFT2} y1={cy + ROW2 / 2} x2={CW2 - RIGHT2} y2={cy + ROW2 / 2}
+                  stroke="#f8fafc" strokeWidth={1} />
+
+                {/* Label */}
+                <text x={LEFT2 - 10} y={cy + 4} textAnchor="end"
+                  fontSize={11} fill={active ? '#94a3b8' : '#475569'} fontWeight="500"
+                  fontFamily="system-ui">
+                  {cat.label}
+                </text>
+
+                {/* Horizontal track */}
+                <line x1={xp(0)} y1={cy} x2={xp(MAX_PCT)} y2={cy}
+                  stroke="#e2e8f0" strokeWidth={1} />
+
+                {/* Animated fill line */}
+                <motion.line x1={xp(0)} y1={cy}
+                  animate={{ x2: lineEnd > 0 ? xp(lineEnd) : xp(0) }}
+                  transition={{ duration: 0.7, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                  stroke="#cbd5e1" strokeWidth={1.5} />
+
+                {/* 2024 – square */}
+                {isVisible(2024) && (
+                  <Square cx={xp(d.y2024)} cy={cy} fill="#94a3b8"
+                    delay={0.55 + i * 0.08} />
+                )}
+                {/* 2025 – circle */}
+                {isVisible(2025) && (
+                  <Circle cx={xp(d.y2025)} cy={cy} fill="#475569"
+                    delay={0.6 + i * 0.08} />
+                )}
+                {/* 2026 – triangle */}
+                {isVisible(2026) && (
+                  <Triangle cx={xp(d.y2026)} cy={cy} fill="#1B5E20"
+                    delay={0.65 + i * 0.08} />
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 /* ─── KPI card ─── */
 
 function KpiCard({
@@ -405,6 +578,9 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
           <CategoryTable total={monthly * issuedCount} />
         </div>
       </div>
+
+      {/* Percent of spend dot-plot */}
+      <PercentOfSpendChart />
 
       {/* Student detail */}
       <StudentTable students={students} monthly={monthly} />

@@ -34,9 +34,10 @@ function VisaCardMini({ className = '' }: { className?: string }) {
         style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)' }}
       />
       <div className="flex justify-end">
-        <svg width="20" height="6" viewBox="0 0 52 18" fill="none">
+        <svg width="26" height="9" viewBox="0 0 52 18" fill="none">
           <path d="M0 1H4.5L8 12L11.5 1H16L10 17H6L0 1Z" fill="white" />
           <path d="M17 1H21V17H17V1Z" fill="white" />
+          <path d="M23 12.5C23 12.5 25 14.5 27.5 14.5C29 14.5 30 13.8 30 12.8C30 11.5 28.5 11 27 10.3C25 9.4 23 8.2 23 5.8C23 3 25.5 0.7 29 0.7C31.5 0.7 33.5 1.8 33.5 1.8L32 4.8C32 4.8 30.5 3.8 29 3.8C27.8 3.8 27 4.4 27 5.2C27 6.3 28.5 6.8 30 7.5C32 8.4 34 9.8 34 12.5C34 15.5 31.5 17.5 27.5 17.5C24.5 17.5 22.5 16 22 15.5L23 12.5Z" fill="white" />
           <path d="M36 17L41 1H46L52 17H48L47 14H40L39 17H36ZM41 11H46L43.5 4L41 11Z" fill="white" />
         </svg>
       </div>
@@ -71,8 +72,7 @@ function BNCRNode({ isRunning }: { isRunning: boolean }) {
         </svg>
       </motion.div>
       <div className="text-center leading-tight">
-        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">EMISOR</p>
-        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">VISA</p>
+        <p className="text-[9px] font-bold text-emerald-400 font-mono tracking-wider">Visa Emisor</p>
       </div>
     </div>
   );
@@ -108,8 +108,8 @@ function PortalNode({ totalDone }: { totalDone: number }) {
         </AnimatePresence>
       </div>
       <div className="text-center leading-tight">
-        <p className="text-[9px] font-bold text-blue-400 font-mono tracking-wider">PORTAL</p>
-        <p className="text-[8px] text-blue-700 font-mono mt-0.5">Universidad Pública</p>
+        <p className="text-[9px] font-bold text-blue-400 font-mono tracking-wider">Universidad</p>
+        <p className="text-[9px] font-bold text-blue-400 font-mono tracking-wider">Pública</p>
       </div>
     </div>
   );
