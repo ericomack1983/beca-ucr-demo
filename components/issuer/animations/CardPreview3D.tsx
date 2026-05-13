@@ -7,12 +7,12 @@ import { MCC_CATEGORIES } from '@/types/issuer-flow';
 import { VisaLogo } from '@/components/issuer/VisaLogo';
 
 const CARD_TYPE_LABELS = { debit: 'Débito', prepaid: 'Prepago' };
-const DELIVERY_LABELS: Record<string, string> = {
-  digital: 'Digital',
-  digital_apple: 'Apple Pay',
-  digital_google: 'Google Pay',
-  digital_both: 'Ambas',
-  digital_physical: 'Físico',
+const DELIVERY_SHORT: Record<string, string> = {
+  digital:          'Digital',
+  digital_apple:    'Apple Pay',
+  digital_google:   'Google Pay',
+  digital_both:     'Apple+Google',
+  digital_physical: 'Física',
 };
 
 function formatCRC(amount: number) {
@@ -47,7 +47,8 @@ interface Props {
 export function CardPreview3D({ config }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isHoveredRef = useRef(false);
-  const isPhysical = config.deliveryType === 'digital_physical';
+  const isPhysical = config.deliveryTypes.includes('digital_physical');
+  const deliveryLabel = config.deliveryTypes.map(d => DELIVERY_SHORT[d] ?? d).join(' + ');
   const gradient = 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 50%, #1434CB 100%)';
 
   const rotXRaw = useMotionValue(0);
@@ -167,7 +168,7 @@ export function CardPreview3D({ config }: Props) {
                 </div>
                 <div className="text-right">
                   <p className="text-[9px] text-white/50 uppercase tracking-widest font-semibold">Entrega</p>
-                  <p className="text-[10px] text-white/80 font-semibold mt-0.5 tracking-wide">{DELIVERY_LABELS[config.deliveryType]}</p>
+                  <p className="text-[10px] text-white/80 font-semibold mt-0.5 tracking-wide">{deliveryLabel}</p>
                 </div>
               </div>
             </div>

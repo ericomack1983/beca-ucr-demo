@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { CardConfig, CardType, DeliveryType, ValidityPeriod } from '@/types/issuer-flow';
 import { MCC_CATEGORIES } from '@/types/issuer-flow';
 import { CardPreview3D } from '@/components/issuer/animations/CardPreview3D';
+import { WalletDigitizationAnimation } from '@/components/issuer/animations/WalletDigitizationAnimation';
 
 /* ── Icon library ── */
 
@@ -57,19 +58,6 @@ function IconGooglePay() {
   );
 }
 
-function IconBank() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M3 21h18" />
-      <path d="M3 10h18" />
-      <path d="M12 3L3 10h18L12 3z" />
-      <path d="M6 10v8" />
-      <path d="M10 10v8" />
-      <path d="M14 10v8" />
-      <path d="M18 10v8" />
-    </svg>
-  );
-}
 
 /* ── MCC icons (stroke, 20×20) ── */
 
@@ -121,11 +109,22 @@ const MCC_ICON_MAP: Record<string, React.ReactNode> = {
   health:    <IconHealth />,
 };
 
+function IconBank() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 21h18" />
+      <path d="M3 10h18" />
+      <path d="M12 3L3 10h18L12 3z" />
+      <path d="M6 10v8M10 10v8M14 10v8M18 10v8" />
+    </svg>
+  );
+}
+
 const DELIVERY_OPTIONS: { id: DeliveryType; icon: React.ReactNode; label: string; description: string }[] = [
-  { id: 'digital',         icon: <IconDigital />,   label: 'Solo Digital',         description: 'Tarjeta virtual inmediata'  },
-  { id: 'digital_apple',   icon: <IconApple />,     label: 'Digital + Apple Pay',  description: 'Virtual + Apple Wallet'     },
-  { id: 'digital_google',  icon: <IconGooglePay />, label: 'Digital + Google Pay', description: 'Virtual + Google Wallet'    },
-  { id: 'digital_physical',icon: <IconBank />,      label: 'Digital + Plástico',   description: 'Virtual + tarjeta física'   },
+  { id: 'digital',          icon: <IconDigital />,   label: 'Solo Digital',         description: 'Tarjeta virtual inmediata' },
+  { id: 'digital_apple',    icon: <IconApple />,     label: 'Apple Pay',            description: 'Añadir a Apple Wallet'     },
+  { id: 'digital_google',   icon: <IconGooglePay />, label: 'Google Pay',           description: 'Añadir a Google Wallet'    },
+  { id: 'digital_physical', icon: <IconBank />,      label: 'Tarjeta Física',       description: 'Tarjeta plástica (correo)' },
 ];
 
 const VALIDITY_OPTIONS: { id: ValidityPeriod; label: string }[] = [
@@ -174,6 +173,15 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
         ? config.mccs.filter(m => m !== id)
         : [...config.mccs, id],
     });
+  };
+
+  const toggleDelivery = (id: DeliveryType) => {
+    const current = config.deliveryTypes;
+    const next = current.includes(id)
+      ? current.filter(d => d !== id)
+      : [...current, id];
+    if (next.length === 0) return; // require at least one
+    update({ deliveryTypes: next });
   };
 
   return (
@@ -308,43 +316,59 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
             </div>
           </section>
 
-          {/* Delivery */}
+          {/* Delivery — multi-select */}
           <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
-              Tipo de entrega
-            </p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Tipo de entrega
+              </p>
+              <span className="text-[10px] text-[#1434CB] font-semibold">
+                {config.deliveryTypes.length} seleccionado{config.deliveryTypes.length !== 1 ? 's' : ''}
+              </span>
+            </div>
             <div className="space-y-2">
-              {DELIVERY_OPTIONS.map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => update({ deliveryType: opt.id })}
-                  aria-pressed={config.deliveryType === opt.id}
-                  className={`w-full p-3 rounded-md border-2 text-left transition-all duration-200 flex items-center gap-3 ${
-                    config.deliveryType === opt.id
-                      ? 'border-[#1434CB] bg-[#1434CB]/5'
-                      : 'border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.22)]'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 ${config.deliveryType === opt.id ? 'bg-[#1434CB] text-white' : 'bg-[#f5f5f5] text-[#4a4a4a]'}`}>
-                    {opt.icon}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-900 text-sm">{opt.label}</p>
-                    <p className="text-xs text-slate-400">{opt.description}</p>
-                  </div>
-                  {config.deliveryType === opt.id && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="ml-auto w-5 h-5 rounded-full bg-[#1434CB] flex items-center justify-center shrink-0"
-                    >
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                    </motion.div>
-                  )}
-                </button>
-              ))}
+              {DELIVERY_OPTIONS.map(opt => {
+                const isChecked = config.deliveryTypes.includes(opt.id);
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => toggleDelivery(opt.id)}
+                    aria-pressed={isChecked}
+                    className={`w-full p-3 rounded-md text-left transition-all duration-200 flex items-center gap-3 ${
+                      isChecked
+                        ? 'border-2 border-[#1434CB] bg-[#1434CB]/5'
+                        : 'border border-[rgba(0,0,0,0.08)] bg-white hover:border-[rgba(0,0,0,0.16)] hover:bg-[#f5f5f5]/60'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                      isChecked ? 'bg-[#1434CB] text-white' : 'bg-[#f5f5f5] text-[#4a4a4a]'
+                    }`}>
+                      {opt.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-semibold text-sm transition-colors ${isChecked ? 'text-[#1434CB]' : 'text-[#000000]'}`}>
+                        {opt.label}
+                      </p>
+                      <p className="text-xs text-[#4a4a4a]/60">{opt.description}</p>
+                    </div>
+                    {/* Checkbox indicator */}
+                    {isChecked ? (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+                        className="w-5 h-5 rounded-md bg-[#1434CB] flex items-center justify-center shrink-0"
+                      >
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                          <path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </motion.div>
+                    ) : (
+                      <div className="w-5 h-5 rounded-md border-2 border-[rgba(0,0,0,0.15)] shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </section>
 
@@ -397,13 +421,44 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
           </section>
         </div>
 
-        {/* Right: 3D card preview */}
+        {/* Right: preview panel — card 3D or wallet animation */}
         <div className="lg:sticky lg:top-24 space-y-4">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm overflow-hidden">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 text-center">
               Vista previa de tarjeta
             </p>
-            <CardPreview3D config={config} />
+            {(() => {
+              const walletType = config.deliveryTypes.includes('digital_apple')
+                ? 'digital_apple'
+                : config.deliveryTypes.includes('digital_google')
+                ? 'digital_google'
+                : null;
+              return (
+                <AnimatePresence mode="wait">
+                  {walletType ? (
+                    <motion.div
+                      key={walletType}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <WalletDigitizationAnimation type={walletType} config={config} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="card3d"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <CardPreview3D config={config} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              );
+            })()}
           </div>
         </div>
       </div>

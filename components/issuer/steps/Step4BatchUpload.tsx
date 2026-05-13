@@ -6,11 +6,11 @@ import type { FlowStudent, CardConfig, BatchPhase } from '@/types/issuer-flow';
 import { DataUploadAnimation } from '@/components/issuer/animations/DataUploadAnimation';
 
 const DELIVERY_LABELS: Record<string, string> = {
-  digital: 'Solo Digital',
-  digital_apple: 'Digital + Apple Pay',
-  digital_google: 'Digital + Google Pay',
-  digital_both: 'Digital + Ambas Wallets',
-  digital_physical: 'Digital + Plástico',
+  digital:          'Solo Digital',
+  digital_apple:    'Apple Pay',
+  digital_google:   'Google Pay',
+  digital_both:     'Apple + Google Pay',
+  digital_physical: 'Tarjeta Física',
 };
 
 const VALIDITY_LABELS: Record<string, string> = {
@@ -146,7 +146,7 @@ export function Step4BatchUpload({
         <SummaryCard
           icon={<IconPackage />}
           label="Tipo de entrega"
-          value={DELIVERY_LABELS[cardConfig.deliveryType]}
+          value={cardConfig.deliveryTypes.map(d => DELIVERY_LABELS[d] ?? d).join(' + ')}
           sub={VALIDITY_LABELS[cardConfig.validity]}
         />
       </div>

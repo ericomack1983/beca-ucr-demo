@@ -50,7 +50,7 @@ export interface CardConfig {
   mccEnabled: boolean;
   mccs: string[];
   monthlyAmount: number;
-  deliveryType: DeliveryType;
+  deliveryTypes: DeliveryType[];
   walletEnabled: boolean;
   validity: ValidityPeriod;
   dailyLimit: number;
@@ -71,7 +71,7 @@ export const DEFAULT_CARD_CONFIG: CardConfig = {
   mccEnabled: false,
   mccs: ['education', 'food'],
   monthlyAmount: 150000,
-  deliveryType: 'digital',
+  deliveryTypes: ['digital'],
   walletEnabled: false,
   validity: 'semestral',
   dailyLimit: 50000,

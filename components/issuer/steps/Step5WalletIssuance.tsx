@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FlowStudent, IssuanceStatus, CardConfig } from '@/types/issuer-flow';
 import { WalletPushAnimation, type Ticket } from '@/components/issuer/animations/WalletPushAnimation';
@@ -9,10 +9,11 @@ import { SuccessBurst } from '@/components/issuer/animations/SuccessBurst';
 import { VisaLogo } from '@/components/issuer/VisaLogo';
 
 const WALLET_NAMES: Record<string, string> = {
-  digital: 'Virtual',
-  digital_apple: 'Apple Pay',
-  digital_google: 'Google Pay',
-  digital_physical: 'Digital',
+  digital:          'Virtual',
+  digital_apple:    'Apple Pay',
+  digital_google:   'Google Pay',
+  digital_both:     'Apple + Google Pay',
+  digital_physical: 'Tarjeta Física',
 };
 
 /* ── Status config ── */
@@ -180,45 +181,45 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
 
   const selected = students.filter(s => s.selected);
   const totalDone = selected.filter(s => s.issuanceStatus === 'active').length;
-  const walletLabel = WALLET_NAMES[cardConfig.deliveryType] ?? 'Digital';
+  const walletLabel = cardConfig.deliveryTypes.map(d => WALLET_NAMES[d] ?? d).join(' + ');
 
-  const startIssuance = useCallback(async () => {
-    if (isRunning || allDone) return;
-    setIsRunning(true);
+  // Cancellation flag guards against StrictMode double-mount
+  useEffect(() => {
+    let cancelled = false;
 
+    async function run() {
+      setIsRunning(true);
 
-    for (const student of selected) {
-      if (student.issuanceStatus === 'active') continue;
+      for (const student of selected) {
+        if (cancelled) return;
+        if (student.issuanceStatus === 'active') continue;
 
-      onStatusChange(student.id, 'generating');
-      await delay(500 + Math.random() * 400);
+        onStatusChange(student.id, 'generating');
+        await delay(500 + Math.random() * 400);
+        if (cancelled) return;
 
-      onStatusChange(student.id, 'sending');
-      await delay(600 + Math.random() * 400);
+        onStatusChange(student.id, 'sending');
+        await delay(600 + Math.random() * 400);
+        if (cancelled) return;
 
-      onStatusChange(student.id, 'active');
-      const last4 = String(1000 + Math.floor(Math.random() * 9000));
-      setRecentIssuances(prev => [
-        ...prev,
-        {
-          id: student.id,
-          name: student.name,
-          wallet: walletLabel,
-          timestamp: Date.now(),
-          amount: cardConfig.monthlyAmount,
-          last4,
-        },
-      ]);
+        onStatusChange(student.id, 'active');
+        const last4 = String(1000 + Math.floor(Math.random() * 9000));
+        setRecentIssuances(prev => [
+          ...prev,
+          { id: student.id, name: student.name, wallet: walletLabel,
+            timestamp: Date.now(), amount: cardConfig.monthlyAmount, last4 },
+        ]);
 
-      await delay(250);
+        await delay(250);
+        if (cancelled) return;
+      }
+
+      setIsRunning(false);
+      setAllDone(true);
     }
 
-    setIsRunning(false);
-    setAllDone(true);
-  }, [isRunning, allDone, selected, onStatusChange, walletLabel, cardConfig.monthlyAmount]);
-
-  useEffect(() => {
-    startIssuance();
+    run();
+    return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

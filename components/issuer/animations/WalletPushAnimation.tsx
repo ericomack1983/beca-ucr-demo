@@ -175,8 +175,9 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
           <PortalNode totalDone={totalDone} />
         </div>
 
-        {/* Notification feed — last 3 confirmed */}
-        <div className="space-y-1.5 min-h-[60px]">
+        {/* Notification feed — all confirmed, scrollable */}
+        <div className="min-h-[60px] max-h-[240px] overflow-y-auto space-y-1.5 pr-0.5"
+          style={{ scrollbarWidth: 'none' }}>
           <AnimatePresence initial={false} mode="popLayout">
             {recentIssuances.length === 0 ? (
               <motion.div
@@ -191,7 +192,7 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
                 </p>
               </motion.div>
             ) : (
-              recentIssuances.slice(-3).reverse().map((t) => (
+              [...recentIssuances].reverse().map((t) => (
                 <motion.div
                   key={`${t.id}-${t.timestamp}`}
                   layout
