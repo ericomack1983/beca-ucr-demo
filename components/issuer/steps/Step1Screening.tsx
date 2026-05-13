@@ -1,25 +1,57 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FlowStudent, FilterState } from '@/types/issuer-flow';
 
+function IconGpa() {
+  return (
+    <svg viewBox="0 0 20 20" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M10 2L2 7l8 5 8-5-8-5z" />
+      <path d="M2 12l8 5 8-5" />
+      <path d="M2 17l8 5 8-5" />
+    </svg>
+  );
+}
+
+function IconDependents() {
+  return (
+    <svg viewBox="0 0 20 20" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="7" cy="6" r="3" />
+      <path d="M1 18c0-3.3 2.7-6 6-6" />
+      <circle cx="14" cy="8" r="2.5" />
+      <path d="M10.5 18c0-2.5 1.6-4.5 3.5-4.5S17.5 15.5 17.5 18" />
+    </svg>
+  );
+}
+
+function IconCredits() {
+  return (
+    <svg viewBox="0 0 20 20" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="4" width="16" height="12" rx="1.5" />
+      <path d="M2 8h16" />
+      <path d="M6 12h3" />
+      <path d="M12 12h2" />
+    </svg>
+  );
+}
+
 function ScoreBadge({ category }: { category: 'APPROVE' | 'REVIEW' | 'DENY' }) {
   const styles = {
-    APPROVE: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-    REVIEW: 'bg-amber-100 text-amber-700 border-amber-300',
-    DENY: 'bg-red-100 text-red-700 border-red-300',
+    APPROVE: 'bg-[#d6f2c4] text-[#2C6849] border-[#40996b]/40',
+    REVIEW:  'bg-[#ffef99] text-[#875903] border-[#c38004]/40',
+    DENY:    'bg-[#ffd6e9] text-[#AD2929] border-[#d65151]/40',
   };
   const labels = { APPROVE: 'Aprobar', REVIEW: 'Revisar', DENY: 'Denegar' };
   return (
-    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${styles[category]}`}>
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${styles[category]}`}>
       {labels[category]}
     </span>
   );
 }
 
 function ScoreBar({ score }: { score: number }) {
-  const color = score >= 80 ? 'bg-emerald-500' : score >= 60 ? 'bg-amber-500' : 'bg-red-500';
+  const color = score >= 80 ? 'bg-[#40996b]' : score >= 60 ? 'bg-[#c38004]' : 'bg-[#d65151]';
   return (
     <div className="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
       <motion.div
@@ -34,7 +66,7 @@ function ScoreBar({ score }: { score: number }) {
 
 interface FilterRangeProps {
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   min: number;
   max: number;
   step: number;
@@ -51,7 +83,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <span className="text-base">{icon}</span>
+          <span className="text-[#4a4a4a]">{icon}</span>
           <span className="text-sm font-semibold text-slate-700">{label}</span>
         </div>
         <span className="text-xs font-bold text-[#1434CB]">{count}/{total}</span>
@@ -66,7 +98,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
             step={step}
             value={valueMin}
             onChange={(e) => onChange(parseFloat(e.target.value) || min, valueMax)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
+            className="w-full px-3 py-1.5 text-sm border border-[rgba(0,0,0,0.12)] rounded-md focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
             aria-label={`${label} mínimo`}
           />
         </div>
@@ -79,7 +111,7 @@ function FilterRange({ label, icon, min, max, step, valueMin, valueMax, format, 
             step={step}
             value={valueMax}
             onChange={(e) => onChange(valueMin, parseFloat(e.target.value) || max)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
+            className="w-full px-3 py-1.5 text-sm border border-[rgba(0,0,0,0.12)] rounded-md focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20"
             aria-label={`${label} máximo`}
           />
         </div>
@@ -129,7 +161,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
 
           <FilterRange
             label="Promedio académico"
-            icon="🎓"
+            icon={<IconGpa />}
             min={0} max={10} step={0.1}
             valueMin={tempFilters.gpaMin}
             valueMax={tempFilters.gpaMax}
@@ -143,7 +175,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
 
           <FilterRange
             label="Personas dependientes"
-            icon="👨‍👩‍👧"
+            icon={<IconDependents />}
             min={0} max={10} step={1}
             valueMin={tempFilters.dependentsMin}
             valueMax={tempFilters.dependentsMax}
@@ -157,7 +189,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
 
           <FilterRange
             label="Créditos matriculados"
-            icon="📚"
+            icon={<IconCredits />}
             min={0} max={24} step={1}
             valueMin={tempFilters.creditsMin}
             valueMax={tempFilters.creditsMax}
@@ -168,7 +200,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
           />
 
           <motion.div
-            className="bg-[#1434CB]/5 border border-[#1434CB]/20 rounded-xl px-4 py-3 text-center"
+            className="bg-[#1434CB]/5 border border-[#1434CB]/20 rounded-md px-4 py-3 text-center"
             key={qualifying.length}
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 0.3 }}
@@ -180,7 +212,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
 
           <button
             onClick={handleApply}
-            className="w-full py-3 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all"
+            className="w-full py-3 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all"
           >
             Aplicar filtros
           </button>
@@ -281,7 +313,7 @@ export function Step1Screening({ students, filters, onFiltersChange, onSelection
             <button
               onClick={onNext}
               disabled={selected.length === 0}
-              className="px-6 py-3 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               Continuar con {selected.length} estudiante{selected.length !== 1 ? 's' : ''}
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

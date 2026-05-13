@@ -6,17 +6,50 @@ import type { CardConfig, CardType, DeliveryType, ValidityPeriod } from '@/types
 import { MCC_CATEGORIES } from '@/types/issuer-flow';
 import { CardPreview3D } from '@/components/issuer/animations/CardPreview3D';
 
-function AppleLogo() {
+/* ── Icon library ── */
+
+function IconDebitCard() {
   return (
-    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor" aria-label="Apple">
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M2 10h20" />
+      <path d="M6 15h4" />
+      <path d="M16 15h2" />
+    </svg>
+  );
+}
+
+function IconPrepaidCard() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M2 10h20" />
+      <path d="M12 13.5v3M10.5 15H13.5" />
+    </svg>
+  );
+}
+
+function IconDigital() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="5" y="2" width="14" height="20" rx="2" />
+      <path d="M5 17h14" />
+      <rect x="8" y="6" width="8" height="7" rx="1" />
+    </svg>
+  );
+}
+
+function IconApple() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-label="Apple">
       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
     </svg>
   );
 }
 
-function WalletIcon() {
+function IconGooglePay() {
   return (
-    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-label="Google Pay">
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Google Pay">
       <rect x="2" y="6" width="20" height="14" rx="2" />
       <path d="M2 10h20" />
       <circle cx="17" cy="15" r="1.5" fill="currentColor" stroke="none" />
@@ -24,11 +57,75 @@ function WalletIcon() {
   );
 }
 
+function IconBank() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 21h18" />
+      <path d="M3 10h18" />
+      <path d="M12 3L3 10h18L12 3z" />
+      <path d="M6 10v8" />
+      <path d="M10 10v8" />
+      <path d="M14 10v8" />
+      <path d="M18 10v8" />
+    </svg>
+  );
+}
+
+/* ── MCC icons (stroke, 20×20) ── */
+
+function IconBook() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+    </svg>
+  );
+}
+
+function IconUtensils() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 2v7c0 1.1.9 2 2 2s2-.9 2-2V2" />
+      <path d="M5 11v11" />
+      <path d="M15 2c0 0 4 2 4 5s-4 4-4 4v9" />
+    </svg>
+  );
+}
+
+function IconBus() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="6" width="18" height="13" rx="2" />
+      <path d="M3 11h18" />
+      <path d="M8 6V4" />
+      <path d="M16 6V4" />
+      <circle cx="7.5" cy="19" r="1" />
+      <circle cx="16.5" cy="19" r="1" />
+    </svg>
+  );
+}
+
+function IconHealth() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 8v4M10 10h4" />
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+    </svg>
+  );
+}
+
+const MCC_ICON_MAP: Record<string, React.ReactNode> = {
+  education: <IconBook />,
+  food:      <IconUtensils />,
+  transport: <IconBus />,
+  health:    <IconHealth />,
+};
+
 const DELIVERY_OPTIONS: { id: DeliveryType; icon: React.ReactNode; label: string; description: string }[] = [
-  { id: 'digital', icon: '💳', label: 'Solo Digital', description: 'Tarjeta virtual inmediata' },
-  { id: 'digital_apple', icon: <AppleLogo />, label: 'Digital + Apple Pay', description: 'Virtual + Apple Wallet' },
-  { id: 'digital_google', icon: <WalletIcon />, label: 'Digital + Google Pay', description: 'Virtual + Google Wallet' },
-  { id: 'digital_physical', icon: '🏦', label: 'Digital + Plástico', description: 'Virtual + tarjeta física' },
+  { id: 'digital',         icon: <IconDigital />,   label: 'Solo Digital',         description: 'Tarjeta virtual inmediata'  },
+  { id: 'digital_apple',   icon: <IconApple />,     label: 'Digital + Apple Pay',  description: 'Virtual + Apple Wallet'     },
+  { id: 'digital_google',  icon: <IconGooglePay />, label: 'Digital + Google Pay', description: 'Virtual + Google Wallet'    },
+  { id: 'digital_physical',icon: <IconBank />,      label: 'Digital + Plástico',   description: 'Virtual + tarjeta física'   },
 ];
 
 const VALIDITY_OPTIONS: { id: ValidityPeriod; label: string }[] = [
@@ -92,15 +189,17 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                 <button
                   key={type}
                   onClick={() => update({ cardType: type })}
-                  className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                  className={`p-4 rounded-md border-2 text-left transition-all duration-200 ${
                     config.cardType === type
                       ? 'border-[#1434CB] bg-[#1434CB]/5'
-                      : 'border-slate-200 hover:border-slate-300'
+                      : 'border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.22)]'
                   }`}
                   aria-pressed={config.cardType === type}
                 >
-                  <p className="text-2xl mb-2">{type === 'debit' ? '💳' : '🎴'}</p>
-                  <p className="font-bold text-slate-900 text-sm">{type === 'debit' ? 'Débito Visa' : 'Prepago Visa'}</p>
+                  <div className={`w-8 h-8 rounded-md flex items-center justify-center mb-3 ${config.cardType === type ? 'bg-[#1434CB] text-white' : 'bg-[#f5f5f5] text-[#4a4a4a]'}`}>
+                    {type === 'debit' ? <IconDebitCard /> : <IconPrepaidCard />}
+                  </div>
+                  <p className="font-semibold text-slate-900 text-sm">{type === 'debit' ? 'Débito Visa' : 'Prepago Visa'}</p>
                   <p className="text-xs text-slate-400 mt-0.5">
                     {type === 'debit' ? 'Asociada a cuenta bancaria' : 'Saldo precargado'}
                   </p>
@@ -141,13 +240,15 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                         key={cat.id}
                         onClick={() => toggleMcc(cat.id)}
                         aria-pressed={config.mccs.includes(cat.id)}
-                        className={`p-3 rounded-xl border-2 text-left transition-all duration-200 ${
+                        className={`p-3 rounded-md border-2 text-left transition-all duration-200 ${
                           config.mccs.includes(cat.id)
                             ? 'border-[#1434CB] bg-[#1434CB]/5'
-                            : 'border-slate-200 hover:border-slate-300'
+                            : 'border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.22)]'
                         }`}
                       >
-                        <p className="text-xl mb-1">{cat.icon}</p>
+                        <div className={`w-7 h-7 rounded-md flex items-center justify-center mb-2 ${config.mccs.includes(cat.id) ? 'bg-[#1434CB] text-white' : 'bg-[#f5f5f5] text-[#4a4a4a]'}`}>
+                          {MCC_ICON_MAP[cat.id] ?? <IconBook />}
+                        </div>
                         <p className="font-semibold text-slate-900 text-xs">{cat.label}</p>
                         <p className="text-[10px] text-slate-400">{cat.description}</p>
                       </button>
@@ -178,7 +279,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                     step={1000}
                     value={config.monthlyAmount}
                     onChange={e => update({ monthlyAmount: parseInt(e.target.value) || 0 })}
-                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
+                    className="w-full pl-8 pr-4 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-md text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
                     aria-label="Monto mensual en colones"
                   />
                 </div>
@@ -198,7 +299,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                     step={1000}
                     value={config.dailyLimit}
                     onChange={e => update({ dailyLimit: parseInt(e.target.value) || 0 })}
-                    className="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
+                    className="w-full pl-8 pr-4 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-md text-sm focus:outline-none focus:border-[#1434CB] focus:ring-1 focus:ring-[#1434CB]/20 font-mono"
                     aria-label="Límite diario en colones"
                   />
                 </div>
@@ -218,13 +319,15 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   key={opt.id}
                   onClick={() => update({ deliveryType: opt.id })}
                   aria-pressed={config.deliveryType === opt.id}
-                  className={`w-full p-3 rounded-xl border-2 text-left transition-all duration-200 flex items-center gap-3 ${
+                  className={`w-full p-3 rounded-md border-2 text-left transition-all duration-200 flex items-center gap-3 ${
                     config.deliveryType === opt.id
                       ? 'border-[#1434CB] bg-[#1434CB]/5'
-                      : 'border-slate-200 hover:border-slate-300'
+                      : 'border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.22)]'
                   }`}
                 >
-                  <span className="text-2xl shrink-0 flex items-center justify-center w-8 h-8">{opt.icon}</span>
+                  <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 ${config.deliveryType === opt.id ? 'bg-[#1434CB] text-white' : 'bg-[#f5f5f5] text-[#4a4a4a]'}`}>
+                    {opt.icon}
+                  </div>
                   <div>
                     <p className="font-semibold text-slate-900 text-sm">{opt.label}</p>
                     <p className="text-xs text-slate-400">{opt.description}</p>
@@ -259,7 +362,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
                   id="validity"
                   value={config.validity}
                   onChange={e => update({ validity: e.target.value as ValidityPeriod })}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1434CB] bg-white"
+                  className="w-full px-3 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-md text-sm focus:outline-none focus:border-[#1434CB] bg-white"
                 >
                   {VALIDITY_OPTIONS.map(o => (
                     <option key={o.id} value={o.id}>{o.label}</option>
@@ -309,7 +412,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
       <div className="flex items-center justify-between pt-2">
         <button
           onClick={onBack}
-          className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+          className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-sm font-semibold text-[#4a4a4a] hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -318,7 +421,7 @@ export function Step3CardConfig({ config, onChange, onNext, onBack }: Props) {
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all flex items-center gap-2"
         >
           Generar pre-aprobación
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

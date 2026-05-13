@@ -17,6 +17,7 @@ import {
   type IssuanceStatus,
 } from "@/types/issuer-flow";
 import { IssuerStepper } from "@/components/issuer/IssuerStepper";
+import { VisaLogo } from "@/components/issuer/VisaLogo";
 import { Step1Screening } from "@/components/issuer/steps/Step1Screening";
 import { Step2Requirements } from "@/components/issuer/steps/Step2Requirements";
 import { Step3CardConfig } from "@/components/issuer/steps/Step3CardConfig";
@@ -151,26 +152,25 @@ export default function IssuerPortalPage() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-[#1434CB] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+    <div className="min-h-screen bg-[#f5f5f5] flex flex-col">
       {/* ── Header ── */}
-      <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+      <header className="bg-[#1434CB] sticky top-0 z-50 shadow-md">
+        <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#1434CB] flex items-center justify-center shadow-md">
-              <IssuerGridIcon />
-            </div>
+            <VisaLogo color="white" height={20} />
+            <div className="w-px h-7 bg-white/20" />
             <div>
-              <p className="text-sm font-bold text-slate-900 leading-none">
+              <p className="text-sm font-semibold text-white leading-none">
                 Portal Adm Universidad
               </p>
-              <p className="text-[10px] text-slate-400 leading-none mt-0.5">
+              <p className="text-[10px] text-white/50 leading-none mt-0.5">
                 Banco Nacional de Costa Rica
               </p>
             </div>
@@ -179,16 +179,16 @@ export default function IssuerPortalPage() {
           <div className="flex items-center gap-6">
             <div className="hidden sm:flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#FCC015] animate-pulse" />
-              <span className="text-[11px] text-[#1434CB] font-semibold">
+              <span className="text-[11px] text-white/80 font-semibold">
                 Motor activo
               </span>
             </div>
-            <div className="hidden md:block text-xs text-slate-500 font-medium">
+            <div className="hidden md:block text-xs text-white/60 font-medium">
               Lote Universidad Pública — {new Date().toLocaleDateString("es-CR", { year: "numeric", month: "long" })}
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               Salir
@@ -199,7 +199,7 @@ export default function IssuerPortalPage() {
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-6 space-y-6">
         {/* ── Stepper ── */}
-        <div className="bg-white rounded-2xl border border-slate-200 px-6 py-4 shadow-sm">
+        <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.08)] px-6 py-4 shadow-sm">
           <IssuerStepper currentStep={currentStep} onStepClick={goToStep} />
         </div>
 
@@ -213,10 +213,10 @@ export default function IssuerPortalPage() {
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-[#1434CB] flex items-center justify-center">
-                <span className="text-white text-xs font-black">{currentStep}</span>
+              <div className="w-7 h-7 rounded-md bg-[#1434CB] flex items-center justify-center">
+                <span className="text-white text-xs font-bold tracking-wide">{currentStep}</span>
               </div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-lg font-semibold text-[#000000]">
                 {STEP_TITLES[currentStep - 1]}
               </h2>
             </div>
@@ -285,25 +285,44 @@ export default function IssuerPortalPage() {
         </AnimatePresence>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="py-5 text-center">
-        <p className="text-xs text-slate-400">
-          Motor de Riesgo v2.1 — Banco Nacional de Costa Rica · Portal Adm Universidad
-        </p>
+      {/* ── Footer — Nova v-footer pattern ── */}
+      <footer className="border-t border-[rgba(0,0,0,0.1)] bg-white">
+        <div className="max-w-5xl mx-auto px-6 py-[15px] flex flex-wrap items-center gap-x-10 gap-y-3">
+          {/* Logo — left anchor */}
+          <VisaLogo color="#1434CB" height={16} />
+
+          {/* Right block: grows, links over copyright on wrap */}
+          <div className="flex flex-1 flex-wrap justify-between items-center gap-x-6 gap-y-2 min-w-0">
+            <p className="text-[11px] text-[#4a4a4a] whitespace-nowrap">
+              © 2025–2026 Visa. Todos los derechos reservados.
+            </p>
+            <ul className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+              <li>
+                <span className="text-[11px] font-mono text-[#4a4a4a]/50 select-none">
+                  Motor de Riesgo v2.1
+                </span>
+              </li>
+              <li className="w-px h-3 bg-[rgba(0,0,0,0.15)]" aria-hidden />
+              <li>
+                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
+                  Privacidad
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
+                  Términos de uso
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
+                  Contacto
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </footer>
     </div>
   );
 }
 
-function IssuerGridIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <rect x="2" y="2" width="5" height="5" rx="1" fill="white" />
-      <rect x="11" y="2" width="5" height="5" rx="1" fill="white" opacity="0.7" />
-      <rect x="2" y="11" width="5" height="5" rx="1" fill="white" opacity="0.7" />
-      <rect x="11" y="11" width="5" height="5" rx="1" fill="white" />
-      <rect x="8" y="2" width="2" height="14" rx="1" fill="white" opacity="0.3" />
-      <rect x="2" y="8" width="14" height="2" rx="1" fill="white" opacity="0.3" />
-    </svg>
-  );
-}

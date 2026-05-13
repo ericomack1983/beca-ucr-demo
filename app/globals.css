@@ -9,6 +9,30 @@
   --ucr-amber: #F59E0B;
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-fraunces: 'Fraunces', Georgia, serif;
+
+  /* Nova Styles — Visa hybrid palette */
+  --nova-active: #1434CB;
+  --nova-active-hover: #173be8;
+  --nova-active-pressed: #0f2595;
+  --nova-accent: #fcc015;
+  --nova-surface-1: #ffffff;
+  --nova-surface-2: #f5f5f5;
+  --nova-surface-3: #f0f0f0;
+  --nova-text: #000000;
+  --nova-text-subtle: #4a4a4a;
+  --nova-border: rgba(0, 0, 0, 0.1);
+  --nova-disabled: rgba(0, 0, 0, 0.2);
+  --nova-positive-surface: #d6f2c4;
+  --nova-positive-text: #2C6849;
+  --nova-positive-graphic: #40996b;
+  --nova-warning-surface: #ffef99;
+  --nova-warning-text: #875903;
+  --nova-warning-graphic: #c38004;
+  --nova-negative-surface: #ffd6e9;
+  --nova-negative-text: #AD2929;
+  --nova-negative-graphic: #d65151;
+  --nova-radius: 6px;
+  --nova-border-size: 2px;
 }
 
 @theme inline {
@@ -83,6 +107,11 @@ h1, h2, h3 {
 .mesh-1 { animation: drift1 18s ease-in-out infinite; }
 .mesh-2 { animation: drift2 22s ease-in-out infinite; }
 .mesh-3 { animation: drift3 15s ease-in-out infinite; }
+
+@keyframes shine {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
 
 /* Pulse dot */
 @keyframes pulse-ring {

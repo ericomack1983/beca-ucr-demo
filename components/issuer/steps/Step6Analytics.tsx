@@ -230,7 +230,7 @@ function LineChart({ cur, prev }: { cur: number[]; prev: number[] }) {
               </div>
             </div>
             {pct !== null && (
-              <div className={`mt-2 pt-2 border-t border-slate-100 text-[10px] font-bold text-right ${parseFloat(pct) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+              <div className={`mt-2 pt-2 border-t border-slate-100 text-[10px] font-bold text-right ${parseFloat(pct) >= 0 ? '' : ''}`} style={{ color: parseFloat(pct) >= 0 ? '#2C6849' : '#d65151' }}>
                 {parseFloat(pct) >= 0 ? '▲' : '▼'} {Math.abs(parseFloat(pct))}% YoY
               </div>
             )}
@@ -373,7 +373,7 @@ function CategoryTable({ total }: { total: number }) {
               <span className={`text-[11px] font-bold font-mono text-right transition-colors ${isHov ? 'text-slate-900' : 'text-slate-600'}`}>
                 {fmtM(amount)}
               </span>
-              <span className={`text-[11px] font-bold text-right w-16 ${c.yoy >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+              <span className="text-[11px] font-bold text-right w-16" style={{ color: c.yoy >= 0 ? '#2C6849' : '#d65151' }}>
                 {c.yoy >= 0 ? '+' : ''}{c.yoy}%
               </span>
             </div>
@@ -389,7 +389,7 @@ function CategoryTable({ total }: { total: number }) {
               <motion.div initial={{ opacity: 0, y: -2 }} animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3 text-[9px] text-slate-400 font-mono">
                 <span>{c.pct}% del total mensual</span>
-                <span className="text-emerald-600">↑ vs 2025</span>
+                <span style={{ color: '#2C6849' }}>↑ vs 2025</span>
               </motion.div>
             )}
           </motion.div>
@@ -659,7 +659,7 @@ function StudentTable({ students, monthly }: { students: FlowStudent[]; monthly:
                   <span className="text-xs font-mono font-bold text-slate-600">{fmt(monthly)}</span>
                 </td>
                 <td className="px-5 py-3 text-right">
-                  <span className="text-xs font-mono font-bold text-emerald-600">{fmt(monthly * MONTHS_ELAPSED)}</span>
+                  <span className="text-xs font-mono font-bold" style={{ color: '#2C6849' }}>{fmt(monthly * MONTHS_ELAPSED)}</span>
                 </td>
               </motion.tr>
             ))}
@@ -669,7 +669,7 @@ function StudentTable({ students, monthly }: { students: FlowStudent[]; monthly:
               <td colSpan={2} className="px-5 py-3 text-xs font-bold text-slate-700 hidden sm:table-cell">Total</td>
               <td className="px-5 py-3 text-xs font-bold text-slate-700 sm:hidden">Total</td>
               <td className="px-3 py-3 text-right text-xs font-bold font-mono text-slate-700">{fmtM(monthly * issued.length)}</td>
-              <td className="px-5 py-3 text-right text-xs font-bold font-mono text-emerald-700">{fmtM(monthly * issued.length * MONTHS_ELAPSED)}</td>
+              <td className="px-5 py-3 text-right text-xs font-bold font-mono" style={{ color: '#2C6849' }}>{fmtM(monthly * issued.length * MONTHS_ELAPSED)}</td>
             </tr>
           </tfoot>
         </table>
@@ -759,7 +759,7 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
       {/* Actions */}
       <div className="flex items-center justify-between pt-1">
         <button onClick={onBack}
-          className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+          className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-sm font-semibold text-[#4a4a4a] hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -777,7 +777,7 @@ export function Step6Analytics({ students, cardConfig, onBack }: Props) {
             a.download = 'analytics-becas-2026.csv'; a.click();
             URL.revokeObjectURL(url);
           }}
-          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M8 3v7M5 7l3 3 3-3M3 13h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

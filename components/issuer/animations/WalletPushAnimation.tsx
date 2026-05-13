@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { VisaLogo } from '@/components/issuer/VisaLogo';
 
 export interface Ticket {
   id: string;
@@ -34,19 +35,7 @@ function VisaCardMini({ className = '' }: { className?: string }) {
         style={{ background: 'linear-gradient(135deg, #FCC015, #e6ac00)' }}
       />
       <div className="flex justify-end">
-        <span
-          className="text-white leading-none select-none"
-          style={{
-            fontFamily: '"Arial Black","Arial Bold",Arial,sans-serif',
-            fontWeight: 900,
-            fontStyle: 'italic',
-            fontSize: 10,
-            letterSpacing: '-0.3px',
-            textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-          }}
-        >
-          VISA
-        </span>
+        <VisaLogo color="white" height={9} />
       </div>
       <div
         className="absolute inset-0 pointer-events-none"
@@ -71,20 +60,7 @@ function BNCRNode({ isRunning }: { isRunning: boolean }) {
         } : { boxShadow: '0 0 0 0 rgba(74,222,128,0)' }}
         transition={{ duration: 1.8, repeat: isRunning ? Infinity : 0 }}
       >
-        <span
-          className="leading-none select-none"
-          style={{
-            color: '#4ade80',
-            fontFamily: '"Arial Black","Arial Bold",Arial,sans-serif',
-            fontWeight: 900,
-            fontStyle: 'italic',
-            fontSize: 16,
-            letterSpacing: '-0.5px',
-            textShadow: '0 1px 4px rgba(74,222,128,0.3)',
-          }}
-        >
-          VISA
-        </span>
+        <VisaLogo color="#4ade80" height={14} />
       </motion.div>
       <div className="text-center leading-tight">
         <p className="text-[9px] font-bold text-[#FCC015] font-mono tracking-wider">Visa Emisor</p>

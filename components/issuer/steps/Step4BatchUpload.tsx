@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FlowStudent, CardConfig, BatchPhase } from '@/types/issuer-flow';
 import { DataUploadAnimation } from '@/components/issuer/animations/DataUploadAnimation';
@@ -23,8 +23,47 @@ function formatCRC(n: number) {
   return `₡${n.toLocaleString('es-CR')}`;
 }
 
+function IconUsers() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="5.5" cy="5" r="2.5" />
+      <path d="M1 14c0-2.5 2-4.5 4.5-4.5" />
+      <circle cx="11" cy="6" r="2" />
+      <path d="M8.5 14c0-2.2 1.1-3.8 2.5-3.8S13.5 11.8 13.5 14" />
+    </svg>
+  );
+}
+
+function IconCurrency() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="8" cy="8" r="6" />
+      <path d="M8 4.5v7M6 6.5h3a1.5 1.5 0 010 3H6" />
+    </svg>
+  );
+}
+
+function IconCardSmall() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="1" y="4" width="14" height="9" rx="1.5" />
+      <path d="M1 7.5h14" />
+    </svg>
+  );
+}
+
+function IconPackage() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M8 1l6 3.5v7L8 15l-6-3.5v-7L8 1z" />
+      <path d="M2 4.5l6 3.5 6-3.5" />
+      <path d="M8 8v7" />
+    </svg>
+  );
+}
+
 interface SummaryCardProps {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: string;
   sub?: string;
@@ -34,11 +73,11 @@ function SummaryCard({ icon, label, value, sub }: SummaryCardProps) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xl">{icon}</span>
-        <p className="text-xs text-slate-500 font-medium">{label}</p>
+        <span className="text-[#1434CB]">{icon}</span>
+        <p className="text-xs text-[#4a4a4a] font-medium">{label}</p>
       </div>
-      <p className="text-2xl font-black text-slate-900">{value}</p>
-      {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+      <p className="text-2xl font-black text-[#000000]">{value}</p>
+      {sub && <p className="text-xs text-[#4a4a4a]/60 mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -87,25 +126,25 @@ export function Step4BatchUpload({
       {/* Summary grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <SummaryCard
-          icon="👥"
+          icon={<IconUsers />}
           label="Estudiantes aprobados"
           value={String(selected.length)}
           sub="en el lote"
         />
         <SummaryCard
-          icon="💰"
+          icon={<IconCurrency />}
           label="Monto total del lote"
           value={formatCRC(totalAmount)}
           sub={`${formatCRC(cardConfig.monthlyAmount)} / estudiante`}
         />
         <SummaryCard
-          icon="💳"
+          icon={<IconCardSmall />}
           label="Tipo de tarjeta"
           value={cardConfig.cardType === 'debit' ? 'Débito' : 'Prepago'}
           sub="Visa"
         />
         <SummaryCard
-          icon="📦"
+          icon={<IconPackage />}
           label="Tipo de entrega"
           value={DELIVERY_LABELS[cardConfig.deliveryType]}
           sub={VALIDITY_LABELS[cardConfig.validity]}
@@ -155,19 +194,19 @@ export function Step4BatchUpload({
               className="flex items-center gap-2.5"
             >
               <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                check.ok ? 'bg-emerald-100' : 'bg-red-100'
+                check.ok ? 'bg-[#d6f2c4]/80' : 'bg-[#ffd6e9]/80'
               }`}>
                 {check.ok ? (
-                  <svg className="w-3 h-3 text-emerald-600" viewBox="0 0 12 12" fill="none">
+                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" style={{ color: '#40996b' }}>
                     <path d="M2 6l2.5 2.5L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 ) : (
-                  <svg className="w-3 h-3 text-red-500" viewBox="0 0 12 12" fill="none">
+                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" style={{ color: '#d65151' }}>
                     <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 )}
               </div>
-              <span className={`text-sm ${check.ok ? 'text-slate-700' : 'text-red-600'}`}>{check.label}</span>
+              <span className="text-sm" style={{ color: check.ok ? '#4a4a4a' : '#AD2929' }}>{check.label}</span>
             </motion.div>
           ))}
         </div>
@@ -196,7 +235,7 @@ export function Step4BatchUpload({
         <button
           onClick={onBack}
           disabled={isRunning}
-          className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2 disabled:opacity-40"
+          className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-sm font-semibold text-[#4a4a4a] hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] transition-all flex items-center gap-2 disabled:opacity-40"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -209,7 +248,7 @@ export function Step4BatchUpload({
             <button
               onClick={onStartBatch}
               disabled={isRunning}
-              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isRunning ? (
                 <>
@@ -235,7 +274,7 @@ export function Step4BatchUpload({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               onClick={onNext}
-              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all flex items-center gap-2"
             >
               Chequear emisión digital
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

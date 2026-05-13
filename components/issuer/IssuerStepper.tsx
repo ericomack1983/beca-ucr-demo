@@ -22,7 +22,7 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
   return (
     <div className="w-full flex items-start justify-between relative py-2">
       {/* Track */}
-      <div className="absolute top-7 left-0 right-0 h-0.5 bg-slate-200 z-0" />
+      <div className="absolute top-7 left-0 right-0 h-0.5 z-0" style={{ background: 'rgba(0,0,0,0.1)' }} />
       <motion.div
         className="absolute top-7 left-0 h-0.5 bg-[#1434CB] z-0 origin-left"
         animate={{ width: `${pct}%` }}
@@ -43,8 +43,8 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
           >
             <motion.div
               animate={{
-                backgroundColor: isDone ? '#1434CB' : isActive ? '#1232b8' : '#F1F5F9',
-                borderColor: isActive || isDone ? '#1434CB' : '#E2E8F0',
+                backgroundColor: isDone ? '#1434CB' : isActive ? '#1434CB' : '#F1F5F9',
+                borderColor: isActive || isDone ? '#1434CB' : 'rgba(0,0,0,0.1)',
                 scale: isActive ? 1.12 : 1,
               }}
               transition={{ duration: 0.3 }}
@@ -61,12 +61,12 @@ export function IssuerStepper({ currentStep, onStepClick }: Props) {
               )}
             </motion.div>
             <div className="text-center hidden sm:block min-w-[72px]">
-              <p className={`text-[11px] font-bold leading-none transition-colors ${
-                isActive ? 'text-[#1434CB]' : isDone ? 'text-[#1434CB]' : 'text-slate-400'
+              <p className={`text-[10px] font-semibold leading-none tracking-[0.5px] uppercase transition-colors ${
+                isActive ? 'text-[#1434CB]' : isDone ? 'text-[#1434CB]' : 'text-[#4a4a4a]/50'
               }`}>
                 {step.label}
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">{step.sublabel}</p>
+              <p className="text-[9px] mt-0.5 tracking-[0.25px]" style={{ color: 'rgba(0,0,0,0.35)' }}>{step.sublabel}</p>
             </div>
           </button>
         );

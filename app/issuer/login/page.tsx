@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowRight, AlertCircle, Shield } from "lucide-react";
 import { issuerLogin } from "@/lib/issuer-auth";
+import { VisaLogo } from "@/components/issuer/VisaLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -53,11 +54,10 @@ export default function IssuerLoginPage() {
 
         {/* Logo */}
         <div className="relative flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center shadow-lg">
-            <IssuerIcon />
-          </div>
+          <VisaLogo color="white" height={26} />
+          <div className="w-px h-8 bg-white/20" />
           <div>
-            <span className="font-bold text-white text-sm tracking-tight">Portal Adm Universidad</span>
+            <span className="font-semibold text-white text-sm tracking-tight">Portal Adm Universidad</span>
             <p className="text-[10px] text-white/50 leading-none -mt-0.5">Banco Nacional de Costa Rica</p>
           </div>
         </div>
@@ -110,11 +110,10 @@ export default function IssuerLoginPage() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
-            <div className="w-9 h-9 rounded-xl bg-[#1434CB] flex items-center justify-center">
-              <IssuerIcon />
-            </div>
+            <VisaLogo color="#1434CB" height={20} />
+            <div className="w-px h-6 bg-slate-200" />
             <div>
-              <span className="font-bold text-slate-900 text-sm">Portal Adm Universidad</span>
+              <span className="font-semibold text-slate-900 text-sm">Portal Adm Universidad</span>
               <p className="text-[10px] text-slate-500 -mt-0.5">Banco Nacional de Costa Rica</p>
             </div>
           </div>
@@ -135,13 +134,13 @@ export default function IssuerLoginPage() {
           </div>
 
           {/* Demo credential */}
-          <div className="bg-[#FCC015]/10 border border-[#FCC015]/30 rounded-2xl p-4 space-y-2">
-            <p className="text-xs font-semibold text-black uppercase tracking-wider">
+          <div className="bg-[#FCC015]/10 border border-[#FCC015]/30 rounded-md p-4 space-y-2">
+            <p className="text-[10px] font-semibold text-[#4a4a4a] uppercase tracking-[1px]">
               Credencial demo
             </p>
             <button
               onClick={fillDemo}
-              className="text-xs px-3 py-1.5 bg-white border border-[#1434CB]/20 text-[#1434CB] rounded-full hover:bg-[#1434CB]/5 transition-colors font-medium"
+              className="text-xs px-3 py-1.5 bg-white border-2 border-[#1434CB]/20 text-[#1434CB] rounded-md hover:bg-[#1434CB]/5 hover:border-[#1434CB]/40 transition-all font-semibold tracking-[0.25px]"
             >
               Admin BN · admin@banconal.fi.cr
             </button>
@@ -188,7 +187,7 @@ export default function IssuerLoginPage() {
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"
+                className="flex items-center gap-2 rounded-md px-4 py-3 text-sm border" style={{ background: '#ffd6e9', borderColor: 'rgba(214,81,81,0.3)', color: '#AD2929' }}
               >
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {error}
@@ -197,7 +196,7 @@ export default function IssuerLoginPage() {
 
             <Button
               type="submit"
-              className="w-full rounded-xl h-12 text-base bg-[#1434CB] hover:bg-[#1232b8]"
+              className="w-full rounded-md h-[42px] text-sm font-semibold tracking-[0.25px] bg-[#1434CB] hover:bg-[#173be8] active:bg-[#0f2595]"
               disabled={loading}
             >
               {loading ? (
@@ -226,15 +225,3 @@ export default function IssuerLoginPage() {
   );
 }
 
-function IssuerIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="3" width="5" height="5" rx="1" fill="white" />
-      <rect x="12" y="3" width="5" height="5" rx="1" fill="white" opacity="0.7" />
-      <rect x="3" y="12" width="5" height="5" rx="1" fill="white" opacity="0.7" />
-      <rect x="12" y="12" width="5" height="5" rx="1" fill="white" />
-      <rect x="9" y="3" width="2" height="14" rx="1" fill="white" opacity="0.3" />
-      <rect x="3" y="9" width="14" height="2" rx="1" fill="white" opacity="0.3" />
-    </svg>
-  );
-}

@@ -27,9 +27,9 @@ function CheckIcon() {
 }
 
 const STATUS_CONFIG: Record<DocumentStatus, { label: string; color: string; bg: string }> = {
-  pending: { label: 'Pendiente', color: 'text-slate-400', bg: 'bg-slate-100' },
-  uploaded: { label: 'Cargado', color: 'text-amber-600', bg: 'bg-amber-50' },
-  verified: { label: 'Verificado', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  pending: { label: 'Pendiente', color: 'text-[#4a4a4a]',  bg: 'bg-[#f5f5f5]' },
+  uploaded: { label: 'Cargado',  color: 'text-[#875903]',  bg: 'bg-[#ffef99]/60' },
+  verified: { label: 'Verificado', color: 'text-[#2C6849]', bg: 'bg-[#d6f2c4]/60' },
 };
 
 function DocumentRow({
@@ -85,11 +85,12 @@ function DropZone({ onDrop }: { onDrop: () => void }) {
       onDragLeave={() => setDragging(false)}
       onDrop={e => { e.preventDefault(); setDragging(false); onDrop(); }}
       onClick={onDrop}
-      className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-200 ${
+      className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all duration-200 ${
         dragging
           ? 'border-[#1434CB] bg-[#1434CB]/5 scale-105'
-          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+          : 'hover:bg-[#f5f5f5]'
       }`}
+      style={!dragging ? { borderColor: 'rgba(0,0,0,0.15)' } : undefined}
       role="button"
       tabIndex={0}
       aria-label="Zona de arrastre para documentos"
@@ -98,9 +99,11 @@ function DropZone({ onDrop }: { onDrop: () => void }) {
       <motion.div
         animate={dragging ? { scale: 1.2, rotate: 5 } : { scale: 1, rotate: 0 }}
         transition={{ duration: 0.2 }}
-        className="text-2xl mb-1"
+        className="flex justify-center mb-1 text-[#1434CB]/50"
       >
-        📎
+        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+        </svg>
       </motion.div>
       <p className="text-xs text-slate-400">
         {dragging ? 'Suelte para adjuntar' : 'Arrastre archivos aquí o haga clic'}
@@ -139,9 +142,10 @@ function StudentRequirementCard({ student, expanded, onToggle, onDocToggle, onDr
               <motion.span
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200"
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-[#40996b]/40"
                 style={{
-                  background: 'linear-gradient(90deg, #d1fae5, #a7f3d0, #d1fae5)',
+                  color: '#2C6849',
+                  background: 'linear-gradient(90deg, #d6f2c4, #b8e6a0, #d6f2c4)',
                   backgroundSize: '200% auto',
                   animation: 'shine 2s linear infinite',
                 }}
@@ -153,7 +157,7 @@ function StudentRequirementCard({ student, expanded, onToggle, onDocToggle, onDr
           <p className="text-xs text-slate-500 mt-0.5">{student.program}</p>
           <div className="mt-2 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
             <motion.div
-              className={`h-full rounded-full transition-colors ${isComplete ? 'bg-emerald-500' : 'bg-amber-500'}`}
+              className={`h-full rounded-full transition-colors ${isComplete ? 'bg-[#40996b]' : 'bg-[#c38004]'}`}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
             />
@@ -261,7 +265,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
         </div>
         <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
           <motion.div
-            className={`h-full rounded-full transition-colors ${allComplete ? 'bg-emerald-500' : 'bg-[#1434CB]'}`}
+            className={`h-full rounded-full transition-colors ${allComplete ? 'bg-[#40996b]' : 'bg-[#1434CB]'}`}
             animate={{ width: `${globalProgress}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
@@ -270,7 +274,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
           <motion.p
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-emerald-600 font-semibold mt-2"
+            className="text-xs font-semibold mt-2" style={{ color: '#2C6849' }}
           >
             ✓ Todos los requisitos completados — puede continuar
           </motion.p>
@@ -295,7 +299,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
       <div className="flex items-center justify-between pt-2">
         <button
           onClick={onBack}
-          className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+          className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-sm font-semibold text-[#4a4a4a] hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -305,7 +309,7 @@ export function Step2Requirements({ students, onDocStatusChange, onNext, onBack 
         <button
           onClick={onNext}
           disabled={!allComplete}
-          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Configurar tarjeta
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>

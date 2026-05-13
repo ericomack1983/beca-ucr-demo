@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { FlowStudent, IssuanceStatus, CardConfig } from '@/types/issuer-flow';
 import { WalletPushAnimation, type Ticket } from '@/components/issuer/animations/WalletPushAnimation';
 import { SuccessBurst } from '@/components/issuer/animations/SuccessBurst';
+import { VisaLogo } from '@/components/issuer/VisaLogo';
 
 const WALLET_NAMES: Record<string, string> = {
   digital: 'Virtual',
@@ -24,7 +25,8 @@ function StatusIcon({ status }: { status: IssuanceStatus }) {
   if (status === 'generating') {
     return (
       <motion.div
-        className="w-4 h-4 rounded-full border-2 border-blue-500 border-t-transparent shrink-0"
+        className="w-4 h-4 rounded-full border-2 border-t-transparent shrink-0"
+        style={{ borderColor: '#0088c7', borderTopColor: 'transparent' }}
         animate={{ rotate: 360 }}
         transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }}
       />
@@ -33,7 +35,7 @@ function StatusIcon({ status }: { status: IssuanceStatus }) {
   if (status === 'sending') {
     return (
       <motion.div
-        className="w-4 h-4 rounded-full bg-amber-400 shrink-0"
+        className="w-4 h-4 rounded-full shrink-0" style={{ background: '#c38004' }}
         animate={{ opacity: [1, 0.4, 1] }}
         transition={{ duration: 0.8, repeat: Infinity }}
       />
@@ -45,7 +47,7 @@ function StatusIcon({ status }: { status: IssuanceStatus }) {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shrink-0"
+        className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#40996b' }}
       >
         <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
           <path d="M2 5l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -54,7 +56,7 @@ function StatusIcon({ status }: { status: IssuanceStatus }) {
     );
   }
   return (
-    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center shrink-0">
+    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: '#d65151' }}>
       <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
         <path d="M2 2l6 6M8 2l-6 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
@@ -63,11 +65,11 @@ function StatusIcon({ status }: { status: IssuanceStatus }) {
 }
 
 const STATUS_LABELS: Record<IssuanceStatus, { label: string; color: string; bg: string }> = {
-  pending:    { label: 'En espera',          color: 'text-slate-500',   bg: 'bg-slate-100' },
-  generating: { label: 'Generando tarjeta',  color: 'text-blue-600',    bg: 'bg-blue-50'   },
-  sending:    { label: 'Notificando portal', color: 'text-amber-600',   bg: 'bg-amber-50'  },
-  active:     { label: 'Confirmado',         color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  error:      { label: 'Error',              color: 'text-red-600',     bg: 'bg-red-50'    },
+  pending:    { label: 'En espera',          color: 'text-[#4a4a4a]',   bg: 'bg-[#f5f5f5]'          },
+  generating: { label: 'Generando tarjeta',  color: 'text-[#005e8a]',   bg: 'bg-[#c7edff]/60'        },
+  sending:    { label: 'Notificando portal', color: 'text-[#875903]',   bg: 'bg-[#ffef99]/60'        },
+  active:     { label: 'Confirmado',         color: 'text-[#2C6849]',   bg: 'bg-[#d6f2c4]/60'       },
+  error:      { label: 'Error',              color: 'text-[#AD2929]',   bg: 'bg-[#ffd6e9]/60'       },
 };
 
 function StatusPill({ status }: { status: IssuanceStatus }) {
@@ -132,7 +134,8 @@ function PhaseIndicator({ isRunning, allDone, totalDone, totalStudents }: PhaseP
                   </motion.div>
                 ) : phase.active ? (
                   <motion.div
-                    className="w-7 h-7 rounded-full border-2 border-amber-400 border-t-transparent"
+                    className="w-7 h-7 rounded-full border-2 border-t-transparent"
+                    style={{ borderColor: '#c38004', borderTopColor: 'transparent' }}
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   />
@@ -143,7 +146,7 @@ function PhaseIndicator({ isRunning, allDone, totalDone, totalStudents }: PhaseP
                 )}
               </div>
               <div className="text-center">
-                <p className={`text-[10px] font-bold leading-tight ${phase.done ? 'text-[#1434CB]' : phase.active ? 'text-amber-600' : 'text-slate-400'}`}>
+                <p className={`text-[10px] font-bold leading-tight ${phase.done ? 'text-[#1434CB]' : 'text-[#4a4a4a]/50'}`} style={phase.active ? { color: '#875903' } : undefined}>
                   {phase.label}
                 </p>
                 <p className="text-[9px] text-slate-400 mt-0.5">{phase.sublabel}</p>
@@ -293,19 +296,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
                         className="w-11 h-7 rounded-md shrink-0 flex items-center justify-center relative overflow-hidden"
                         style={{ background: 'linear-gradient(135deg, #0a0e2e 0%, #1232b8 60%, #1434CB 100%)' }}
                       >
-                        <span
-                          className="text-white select-none leading-none"
-                          style={{
-                            fontFamily: '"Arial Black", "Arial Bold", Arial, sans-serif',
-                            fontWeight: 900,
-                            fontStyle: 'italic',
-                            fontSize: 11,
-                            letterSpacing: '-0.3px',
-                            textShadow: '0 1px 2px rgba(0,0,0,0.4)',
-                          }}
-                        >
-                          VISA
-                        </span>
+                        <VisaLogo color="white" height={10} />
                         <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.07) 50%,transparent 70%)' }} />
                       </div>
                       <span className="text-[10px] font-mono text-slate-500">•••• {issued.last4}</span>
@@ -325,7 +316,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
         <button
           onClick={onBack}
           disabled={isRunning}
-          className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2 disabled:opacity-40"
+          className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-sm font-semibold text-[#4a4a4a] hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] transition-all flex items-center gap-2 disabled:opacity-40"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
             <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -340,7 +331,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.15 }}
               onClick={onNext}
-              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-xl font-semibold text-sm hover:bg-[#1232b8] active:scale-95 transition-all flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#1434CB] text-white rounded-md font-semibold text-sm tracking-[0.25px] hover:bg-[#173be8] active:bg-[#0f2595] active:scale-[0.98] transition-all flex items-center gap-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" aria-hidden>
                 <path d="M2 8h10M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -352,7 +343,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
             <motion.button
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-200 active:scale-95 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 rounded-md border-2 border-[rgba(0,0,0,0.1)] text-[#4a4a4a] font-semibold text-sm hover:bg-[#f5f5f5] hover:border-[rgba(0,0,0,0.18)] active:scale-[0.98] transition-all flex items-center gap-2"
               onClick={() => {
                 const csv = [
                   'Nombre,Carne,Programa,Tarjeta,Estado',
