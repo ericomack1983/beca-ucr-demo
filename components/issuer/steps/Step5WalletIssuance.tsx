@@ -357,7 +357,7 @@ export function Step5WalletIssuance({ students, cardConfig, onStatusChange, onBa
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'lote-becas-bncr.csv';
+                a.download = 'lote-becas-bcr.csv';
                 a.click();
                 URL.revokeObjectURL(url);
               }}

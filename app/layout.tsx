@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces, Open_Sans } from "next/font/google";
+import "@visa/nova-styles/styles.css";
+import "@visa/nova-styles/themes/visa-light/index.css";
 import "./globals.css";
+import { DemoRibbon } from "@/components/ui/demo-ribbon";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,7 +29,9 @@ export const metadata: Metadata = {
   title: "BecasCR — Portal Nacional de Becas",
   description: "Portal oficial de solicitud de becas en Costa Rica. Democratizando el acceso a la educación superior.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 
@@ -40,7 +45,10 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${fraunces.variable} ${openSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full" suppressHydrationWarning>
+        {children}
+        <DemoRibbon />
+      </body>
     </html>
   );
 }

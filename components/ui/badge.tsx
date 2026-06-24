@@ -12,6 +12,7 @@ const badgeVariants = cva(
         success: "bg-[#10B981]/10 text-[#059669]",
         warning: "bg-amber-100 text-amber-800",
         danger: "bg-red-100 text-red-700",
+        destructive: "bg-red-100 text-red-700",
         outline: "border border-slate-200 text-slate-600",
         issuer: "bg-amber-50 border border-amber-200 text-amber-800",
         ucr: "bg-[#0B2A5B]/8 border border-[#0B2A5B]/15 text-[#0B2A5B]",

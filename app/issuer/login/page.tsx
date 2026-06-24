@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowRight, AlertCircle, Shield } from "lucide-react";
 import { issuerLogin } from "@/lib/issuer-auth";
 import { VisaLogo } from "@/components/issuer/VisaLogo";
+import { BCRLogo } from "@/components/ui/bcr-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -35,7 +36,7 @@ export default function IssuerLoginPage() {
   };
 
   const fillDemo = () => {
-    setEmail("admin@banconal.fi.cr");
+    setEmail("admin@bancobcr.com");
     setPassword("issuer123");
     setError("");
   };
@@ -54,11 +55,17 @@ export default function IssuerLoginPage() {
 
         {/* Logo */}
         <div className="relative flex items-center gap-3">
-          <VisaLogo color="white" height={26} />
+          <span
+            className="inline-flex items-center rounded-lg bg-white px-3 py-2"
+            style={{ boxShadow: "0 2px 10px rgba(0,0,0,.18)" }}
+          >
+            <BCRLogo height={24} />
+          </span>
+          <VisaLogo color="white" height={22} />
           <div className="w-px h-8 bg-white/20" />
           <div>
             <span className="font-semibold text-white text-sm tracking-tight">Portal Adm Universidad</span>
-            <p className="text-[10px] text-white/50 leading-none -mt-0.5">Banco Nacional de Costa Rica</p>
+            <p className="text-[10px] text-white/50 leading-none -mt-0.5">Banco de Costa Rica</p>
           </div>
         </div>
 
@@ -94,7 +101,7 @@ export default function IssuerLoginPage() {
         </div>
 
         <div className="relative flex gap-4 text-xs text-white/30">
-          <span>© 2026 BNCR</span>
+          <span>© 2026 BCR</span>
           <span>·</span>
           <span>Portal Adm Universidad Demo</span>
         </div>
@@ -110,11 +117,13 @@ export default function IssuerLoginPage() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
-            <VisaLogo color="#1434CB" height={20} />
+            <BCRLogo height={22} />
+            <div className="w-px h-6 bg-slate-200" />
+            <VisaLogo color="#1434CB" height={18} />
             <div className="w-px h-6 bg-slate-200" />
             <div>
               <span className="font-semibold text-slate-900 text-sm">Portal Adm Universidad</span>
-              <p className="text-[10px] text-slate-500 -mt-0.5">Banco Nacional de Costa Rica</p>
+              <p className="text-[10px] text-slate-500 -mt-0.5">Banco de Costa Rica</p>
             </div>
           </div>
 
@@ -129,7 +138,7 @@ export default function IssuerLoginPage() {
               Ingreso al portal emisor
             </h1>
             <p className="text-sm text-slate-500">
-              Solo para oficiales autorizados del Banco Nacional
+              Solo para oficiales autorizados del Banco de Costa Rica
             </p>
           </div>
 
@@ -142,7 +151,7 @@ export default function IssuerLoginPage() {
               onClick={fillDemo}
               className="text-xs px-3 py-1.5 bg-white border-2 border-[#1434CB]/20 text-[#1434CB] rounded-md hover:bg-[#1434CB]/5 hover:border-[#1434CB]/40 transition-all font-semibold tracking-[0.25px]"
             >
-              Admin BN · admin@banconal.fi.cr
+              Admin BCR · admin@bancobcr.com
             </button>
           </div>
 
@@ -153,7 +162,7 @@ export default function IssuerLoginPage() {
               </label>
               <Input
                 type="email"
-                placeholder="usuario@banconal.fi.cr"
+                placeholder="usuario@bancobcr.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"

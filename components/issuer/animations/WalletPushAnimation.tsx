@@ -45,7 +45,7 @@ function VisaCardMini({ className = '' }: { className?: string }) {
   );
 }
 
-function BNCRNode({ isRunning }: { isRunning: boolean }) {
+function BCRNode({ isRunning }: { isRunning: boolean }) {
   return (
     <div className="flex flex-col items-center gap-2 shrink-0 w-[72px]">
       <motion.div
@@ -144,7 +144,7 @@ export function WalletPushAnimation({ recentIssuances, totalDone, totalStudents,
       <div className="relative p-5 space-y-4">
         {/* Three-node row */}
         <div className="flex items-center gap-2">
-          <BNCRNode isRunning={isRunning} />
+          <BCRNode isRunning={isRunning} />
 
           {/* Flight path */}
           <div className="flex-1 relative h-14">

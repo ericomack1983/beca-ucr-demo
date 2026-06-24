@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
 
     const payment = await b2b.BIP.initiate({
       messageId:     uuid(),
-      clientId:      "BNCR-BECAS-001",
-      buyerId:       "BNCR-001",
+      clientId:      "BCR-BECAS-001",
+      buyerId:       "BCR-001",
       supplierId:    carne,
       paymentAmount: amount ?? 500_000,
       currencyCode:  "188",           // ISO 4217: CRC — Costa Rican Colón

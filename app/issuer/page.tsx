@@ -1,328 +1,313 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { LogOut } from "lucide-react";
-import { getIssuerSession, issuerLogout } from "@/lib/issuer-auth";
-import { MOCK_FLOW_STUDENTS } from "@/lib/mock-issuer-flow";
+import React, { useEffect, useState } from "react";
 import {
-  DEFAULT_FILTERS,
-  DEFAULT_CARD_CONFIG,
-  type FlowStudent,
-  type FilterState,
-  type CardConfig,
-  type BatchPhase,
-  type DocumentStatus,
-  type IssuanceStatus,
-} from "@/types/issuer-flow";
-import { IssuerStepper } from "@/components/issuer/IssuerStepper";
-import { VisaLogo } from "@/components/issuer/VisaLogo";
-import { Step1Screening } from "@/components/issuer/steps/Step1Screening";
-import { Step2Requirements } from "@/components/issuer/steps/Step2Requirements";
-import { Step3CardConfig } from "@/components/issuer/steps/Step3CardConfig";
-import { Step4BatchUpload } from "@/components/issuer/steps/Step4BatchUpload";
-import { Step5WalletIssuance } from "@/components/issuer/steps/Step5WalletIssuance";
-import { Step6Analytics } from "@/components/issuer/steps/Step6Analytics";
+  ContentCard, ContentCardBody, Typography, SectionMessage, SectionMessageContent,
+  Table, TableWrapper, Thead, Tbody, Tr, Th, Td, ProgressLinear,
+} from "@visa/nova-react";
+import {
+  VisaTransactionsLow, VisaWarningLow, VisaAnalyticsLow,
+  VisaCheckmarkLow, VisaTrendingLow,
+} from "@visa/nova-icons-react";
+import { formatCRC } from "@/lib/config";
 
-// Batch simulation timings
-const BATCH_SEQUENCE: { phase: BatchPhase; durationMs: number }[] = [
-  { phase: "generating", durationMs: 2000 },
-  { phase: "validating", durationMs: 2500 },
-  { phase: "sending", durationMs: 2000 },
-  { phase: "processing", durationMs: 3000 },
-  { phase: "complete", durationMs: 0 },
+// Program budget consumption — amounts in millions of colones (₡…M),
+// matching the dashboard's "₡17.960M" convention.
+const PROGRAM_PERFORMANCE = [
+  { name: "Beca Socioeconómica",              consumed: 17960, total: 45000 },
+  { name: "Beca Alimentación", consumed: 13900, total: 15000 },
+  { name: "Beca de Equidad Regional",   consumed: 9800,  total: 12000 },
+  { name: "Horas Estudiante",               consumed: 6200,  total: 8500  },
+  { name: "Residencias Estudiantiles",           consumed: 5100,  total: 9200  },
+  { name: "Beca de Estímulo",  consumed: 2400,  total: 6000  },
 ];
 
-const STEP_TITLES = [
-  "Filtrado de estudiantes",
-  "Verificación de requisitos",
-  "Configuración de tarjeta",
-  "Pre-aprobación y lote bancario",
-  "Emisión digital e integración wallets",
-  "Analytics — Fondos de Becas del Gobierno",
+const fmtMillions = (m: number) => `₡${m.toLocaleString("es-CR")}M`;
+
+const STATIC_STATS = [
+  {
+    label: "Desembolso total",
+    value: "₡17.960M",
+    sub: "+8% vs 2025 · Visa Direct",
+    icon: VisaTransactionsLow,
+  },
 ];
 
-export default function IssuerPortalPage() {
-  const router = useRouter();
-  const [ready, setReady] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [students, setStudents] = useState<FlowStudent[]>(MOCK_FLOW_STUDENTS);
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
-  const [cardConfig, setCardConfig] = useState<CardConfig>(DEFAULT_CARD_CONFIG);
-  const [batchPhase, setBatchPhase] = useState<BatchPhase>("idle");
-  const [batchProgress, setBatchProgress] = useState(0);
-  const [currentRecord, setCurrentRecord] = useState(0);
-  const batchRef = useRef(false);
+const RECENT_ALERTS = [
+  { id: "a1", beneficiary: "María Fernández Rojas",    canton: "Desamparados",  amount: 85000, lastDisbursement: "20/04/2026", nextDisbursement: "20/05/2026", date: "12/04/2026", status: "declined" as const, photo: "https://randomuser.me/api/portraits/women/68.jpg" },
+  { id: "a2", beneficiary: "Roberto Rodríguez Ugalde", canton: "Alajuela",      amount: 55000, lastDisbursement: "18/04/2026", nextDisbursement: "18/05/2026", date: "10/04/2026", status: "declined" as const, photo: "https://randomuser.me/api/portraits/men/45.jpg"   },
+  { id: "a3", beneficiary: "Francisca Solano Quesada", canton: "Cartago",       amount: 42000, lastDisbursement: "15/04/2026", nextDisbursement: "15/05/2026", date: "08/04/2026", status: "approved" as const, photo: "https://randomuser.me/api/portraits/women/55.jpg" },
+  { id: "a4", beneficiary: "Luisa Brenes Mora",        canton: "Limón",         amount: 55000, lastDisbursement: "12/04/2026", nextDisbursement: "12/05/2026", date: "05/04/2026", status: "declined" as const, photo: "https://randomuser.me/api/portraits/women/31.jpg" },
+  { id: "a5", beneficiary: "Pedro Herrera Campos",     canton: "San Carlos",    amount: 22000, lastDisbursement: "10/04/2026", nextDisbursement: "10/05/2026", date: "03/04/2026", status: "declined" as const, photo: "https://randomuser.me/api/portraits/men/62.jpg"   },
+  { id: "a6", beneficiary: "Concepción Alvarado Ríos", canton: "Golfito",       amount: 55000, lastDisbursement: "08/04/2026", nextDisbursement: "08/05/2026", date: "01/04/2026", status: "approved" as const, photo: "https://randomuser.me/api/portraits/women/77.jpg" },
+];
 
-  useEffect(() => {
-    getIssuerSession().then(session => {
-      if (!session) router.replace("/issuer/login");
-      else setReady(true);
-    });
-  }, [router]);
+const CANTON_DATA = [
+  { name: "San José",      students: 28420, disbursed: "₡1.562M", pct: 98 },
+  { name: "Alajuela",      students: 19840, disbursed: "₡1.091M", pct: 97 },
+  { name: "Cartago",       students: 14230, disbursed: "₡783M",   pct: 96 },
+  { name: "Heredia",       students: 12610, disbursed: "₡694M",   pct: 95 },
+  { name: "Guanacaste",    students: 18980, disbursed: "₡1.044M", pct: 93 },
+  { name: "Puntarenas",    students: 22210, disbursed: "₡1.221M", pct: 91 },
+  { name: "Limón",         students: 19840, disbursed: "₡1.091M", pct: 90 },
+  { name: "Brunca",        students: 16870, disbursed: "₡928M",   pct: 88 },
+  { name: "Huetar Norte",  students: 14540, disbursed: "₡800M",   pct: 87 },
+  { name: "Chorotega",     students: 18120, disbursed: "₡997M",   pct: 85 },
+];
 
-  const handleLogout = async () => {
-    await issuerLogout();
-    router.push("/issuer/login");
-  };
+const BEAM_ANIM = `
+@keyframes bbeam {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+`;
 
-  // Step 1 handlers
-  const handleFiltersChange = (f: FilterState) => setFilters(f);
-
-  const handleSelectionChange = (id: string, selected: boolean) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, selected } : s))
-    );
-  };
-
-  const handleSelectAll = (selected: boolean) => {
-    setStudents((prev) => prev.map((s) => ({ ...s, selected })));
-  };
-
-  // Step 2 handlers
-  const handleDocStatusChange = (
-    studentId: string,
-    docId: string,
-    status: DocumentStatus
-  ) => {
-    setStudents((prev) =>
-      prev.map((s) =>
-        s.id === studentId
-          ? {
-              ...s,
-              documents: s.documents.map((d) =>
-                d.id === docId ? { ...d, status } : d
-              ),
-            }
-          : s
-      )
-    );
-  };
-
-  // Step 4: batch simulation
-  const startBatch = useCallback(async () => {
-    if (batchRef.current) return;
-    batchRef.current = true;
-    const totalRecords = students.filter((s) => s.selected).length;
-
-    for (let i = 0; i < BATCH_SEQUENCE.length; i++) {
-      const { phase, durationMs } = BATCH_SEQUENCE[i];
-      setBatchPhase(phase);
-      if (durationMs === 0) break;
-
-      const start = Date.now();
-      const baseProgress = (i / (BATCH_SEQUENCE.length - 1)) * 100;
-      const nextProgress = ((i + 1) / (BATCH_SEQUENCE.length - 1)) * 100;
-
-      const interval = setInterval(() => {
-        const elapsed = Date.now() - start;
-        const ratio = Math.min(elapsed / durationMs, 1);
-        const progress = baseProgress + (nextProgress - baseProgress) * ratio;
-        setBatchProgress(Math.min(progress, 98));
-
-        if (phase === "processing") {
-          setCurrentRecord(Math.floor(ratio * totalRecords));
-        }
-      }, 50);
-
-      await new Promise((r) => setTimeout(r, durationMs));
-      clearInterval(interval);
-    }
-
-    setBatchProgress(100);
-    setCurrentRecord(totalRecords);
-    setBatchPhase("complete");
-    batchRef.current = false;
-  }, [students]);
-
-  // Step 5: issuance status
-  const handleIssuanceStatus = (id: string, status: IssuanceStatus) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, issuanceStatus: status } : s))
-    );
-  };
-
-  const goToStep = (step: number) => {
-    if (step < currentStep) setCurrentStep(step);
-  };
-
-  const nextStep = () => setCurrentStep((s) => Math.min(s + 1, 6));
-  const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
-
-  if (!ready) {
-    return (
-      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#1434CB] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
+function BorderBeamCard({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  const flex = (style as React.CSSProperties & { flex?: string })?.flex;
   return (
-    <div className="min-h-screen bg-[#f5f5f5] flex flex-col">
-      {/* ── Header ── */}
-      <header className="bg-[#1434CB] sticky top-0 z-50 shadow-md">
-        <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <VisaLogo color="white" height={20} />
-            <div className="w-px h-7 bg-white/20" />
-            <div>
-              <p className="text-sm font-semibold text-white leading-none">
-                Portal Adm Universidad
-              </p>
-              <p className="text-[10px] text-white/50 leading-none mt-0.5">
-                Banco Nacional de Costa Rica
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="hidden sm:flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#FCC015] animate-pulse" />
-              <span className="text-[11px] text-white/80 font-semibold">
-                Motor activo
-              </span>
-            </div>
-            <div className="hidden md:block text-xs text-white/60 font-medium">
-              Lote Universidad Pública — {new Date().toLocaleDateString("es-CR", { year: "numeric", month: "long" })}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Salir
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-6 space-y-6">
-        {/* ── Stepper ── */}
-        <div className="bg-white rounded-2xl border border-[rgba(0,0,0,0.08)] px-6 py-4 shadow-sm">
-          <IssuerStepper currentStep={currentStep} onStepClick={goToStep} />
-        </div>
-
-        {/* ── Step title ── */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-7 h-7 rounded-md bg-[#1434CB] flex items-center justify-center">
-                <span className="text-white text-xs font-bold tracking-wide">{currentStep}</span>
-              </div>
-              <h2 className="text-lg font-semibold text-[#000000]">
-                {STEP_TITLES[currentStep - 1]}
-              </h2>
-            </div>
-
-            {/* ── Step content ── */}
-            {currentStep === 1 && (
-              <Step1Screening
-                students={students}
-                filters={filters}
-                onFiltersChange={handleFiltersChange}
-                onSelectionChange={handleSelectionChange}
-                onSelectAll={handleSelectAll}
-                onNext={nextStep}
-              />
-            )}
-
-            {currentStep === 2 && (
-              <Step2Requirements
-                students={students}
-                onDocStatusChange={handleDocStatusChange}
-                onNext={nextStep}
-                onBack={prevStep}
-              />
-            )}
-
-            {currentStep === 3 && (
-              <Step3CardConfig
-                config={cardConfig}
-                onChange={setCardConfig}
-                onNext={nextStep}
-                onBack={prevStep}
-              />
-            )}
-
-            {currentStep === 4 && (
-              <Step4BatchUpload
-                students={students}
-                cardConfig={cardConfig}
-                batchPhase={batchPhase}
-                batchProgress={batchProgress}
-                currentRecord={currentRecord}
-                onStartBatch={startBatch}
-                onNext={nextStep}
-                onBack={prevStep}
-              />
-            )}
-
-            {currentStep === 5 && (
-              <Step5WalletIssuance
-                students={students}
-                cardConfig={cardConfig}
-                onStatusChange={handleIssuanceStatus}
-                onBack={prevStep}
-                onNext={nextStep}
-              />
-            )}
-
-            {currentStep === 6 && (
-              <Step6Analytics
-                students={students}
-                cardConfig={cardConfig}
-                onBack={prevStep}
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </main>
-
-      {/* ── Footer — Nova v-footer pattern ── */}
-      <footer className="border-t border-[rgba(0,0,0,0.1)] bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-[15px] flex flex-wrap items-center gap-x-10 gap-y-3">
-          {/* Logo — left anchor */}
-          <VisaLogo color="#1434CB" height={16} />
-
-          {/* Right block: grows, links over copyright on wrap */}
-          <div className="flex flex-1 flex-wrap justify-between items-center gap-x-6 gap-y-2 min-w-0">
-            <p className="text-[11px] text-[#4a4a4a] whitespace-nowrap">
-              © 2025–2026 Visa. Todos los derechos reservados.
-            </p>
-            <ul className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
-              <li>
-                <span className="text-[11px] font-mono text-[#4a4a4a]/50 select-none">
-                  Motor de Riesgo v2.1
-                </span>
-              </li>
-              <li className="w-px h-3 bg-[rgba(0,0,0,0.15)]" aria-hidden />
-              <li>
-                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
-                  Privacidad
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
-                  Términos de uso
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[11px] text-[#1434CB] hover:text-[#173be8] hover:underline transition-colors">
-                  Contacto
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer>
+    <div style={{ position: "relative", flex }}>
+      <div style={{ position: "absolute", inset: -1.5, borderRadius: 13, overflow: "hidden", zIndex: 0, pointerEvents: "none" }}>
+        <div style={{
+          position: "absolute", left: "50%", top: "50%",
+          width: "200%", height: "200%",
+          background: "conic-gradient(from 0deg, transparent 0%, transparent 78%, rgba(0,61,165,.85) 83%, rgba(20,52,203,.75) 86%, rgba(255,255,255,.5) 88%, transparent 93%)",
+          animation: "bbeam 4s linear infinite",
+        }} />
+      </div>
+      <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
 }
 
+const TOAST_ANIM = `
+@keyframes toast-in  { from { transform: translateY(-16px) translateX(110%); opacity: 0; } to { transform: translateY(0) translateX(0); opacity: 1; } }
+@keyframes toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+`;
+
+const NEW_BENEFICIARIES = [
+  { name: "Valeria Herrera Pérez",  canton: "Heredia",        photo: "https://i.pravatar.cc/40?u=nb1" },
+  { name: "Diego Vargas Solano",    canton: "Alajuela",       photo: "https://i.pravatar.cc/40?u=nb2" },
+  { name: "Sofía Jiménez Castro",   canton: "Pérez Zeledón",  photo: "https://i.pravatar.cc/40?u=nb3" },
+];
+
+export default function PortalPage() {
+  const declinedCount = RECENT_ALERTS.filter((a) => a.status === "declined").length;
+  const TARGET = 325660;
+
+  const [count, setCount]               = useState(0);
+  const [fraudAlerts, setFraudAlerts]   = useState(183);
+  const [approvalRate, setApprovalRate] = useState(99.81);
+  const [toast, setToast]               = useState<{ name: string; canton: string; photo?: string } | null>(null);
+  const [toastOut, setToastOut]         = useState(false);
+
+  useEffect(() => {
+    const duration = 1400;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const elapsed  = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * TARGET));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setFraudAlerts((n) => n + Math.floor(Math.random() * 3) + 1), 4000 + Math.random() * 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setApprovalRate((r) => {
+        const delta = (Math.random() - 0.48) * 0.3;
+        return Math.min(99.99, Math.max(97.4, +(r + delta).toFixed(2)));
+      });
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    let idx = 0;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const show = () => {
+      setToastOut(false);
+      const ben = NEW_BENEFICIARIES[idx % NEW_BENEFICIARIES.length];
+      setToast(ben);
+      idx++;
+      window.dispatchEvent(new CustomEvent("new-beneficiary"));
+      timers.push(setTimeout(() => setToastOut(true), 3000));
+      timers.push(setTimeout(() => setToast(null), 3400));
+    };
+    const DELAYS = [3000, 5000, 15000];
+    let cumulative = 0;
+    DELAYS.forEach((d) => { cumulative += d; timers.push(setTimeout(show, cumulative)); });
+    const interval = setInterval(show, cumulative + 15000);
+    return () => { timers.forEach(clearTimeout); clearInterval(interval); };
+  }, []);
+
+  return (
+    <div className="v-flex v-flex-col v-gap-8">
+      <style>{BEAM_ANIM}</style>
+
+      <SectionMessage className="v-message-info">
+        <SectionMessageContent>
+          <Typography className="v-typography-body-2">
+            Ciclo de mayo 2026 · <strong>7 sedes activas</strong> ·{" "}
+            {declinedCount} alertas pendientes
+          </Typography>
+        </SectionMessageContent>
+      </SectionMessage>
+
+      <div>
+        <Typography tag="h1" className="v-typography-headline-1">Resumen General</Typography>
+        <Typography className="v-typography-subtitle-2">Beca Socioeconómica · UCR × Banco de Costa Rica × Visa · Mayo 2026</Typography>
+      </div>
+
+      {/* KPI strip */}
+      <div style={{ display: "flex", gap: "16px", alignItems: "stretch" }}>
+        <BorderBeamCard style={{ flex: "2 0 0" }}>
+          <ContentCard style={{ flex: "2 0 0", background: "var(--v-nav-background)" }}>
+            <ContentCardBody>
+              <Typography tag="p" className="v-typography-display-1" style={{ color: "var(--v-nav-foreground)" }}>
+                {count.toLocaleString("es-CR")}
+              </Typography>
+              <Typography className="v-typography-subtitle-1" style={{ color: "var(--v-nav-foreground)", marginTop: "6px", opacity: 0.9 }}>
+                Estudiantes activos en Beca Socioeconómica
+              </Typography>
+              <div className="v-flex v-align-items-center v-gap-1" style={{ marginTop: "20px", opacity: 0.7 }}>
+                <VisaTrendingLow style={{ color: "var(--v-nav-foreground)" }} />
+                <Typography className="v-typography-label" style={{ color: "var(--v-nav-foreground)" }}>
+                  +6.1% este ciclo · 7 sedes · 18 facultades
+                </Typography>
+              </div>
+            </ContentCardBody>
+          </ContentCard>
+        </BorderBeamCard>
+
+        {[
+          ...STATIC_STATS,
+          { label: "Alertas de fraude", value: String(fraudAlerts), sub: `${(fraudAlerts / 325660 * 100).toFixed(2)}% del total · Visa Risk Manager`, icon: VisaWarningLow },
+          { label: "Tasa de aprobación", value: `${approvalRate.toLocaleString("es-CR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`, sub: "Visa Risk Manager activo", icon: VisaAnalyticsLow },
+        ].map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <ContentCard key={stat.label} style={{ flex: "1 0 0" }}>
+              <ContentCardBody>
+                <Typography tag="p" className="v-typography-headline-1" style={{ whiteSpace: "nowrap" }}>{stat.value}</Typography>
+                <div className="v-flex v-align-items-center v-gap-1" style={{ marginTop: "8px" }}>
+                  <Icon />
+                  <Typography className="v-typography-body-2">{stat.label}</Typography>
+                </div>
+                <Typography className="v-typography-label v-typography-color-subtle" style={{ marginTop: "4px" }}>{stat.sub}</Typography>
+              </ContentCardBody>
+            </ContentCard>
+          );
+        })}
+      </div>
+
+      {/* Tables */}
+      <div style={{ display: "flex", gap: "24px", alignItems: "stretch" }}>
+        <ContentCard style={{ flex: 1 }}>
+          <ContentCardBody>
+            <Typography tag="h2" className="v-typography-headline-4" style={{ marginBottom: "4px" }}>
+              Rendimiento de Programas
+            </Typography>
+            <Typography className="v-typography-label v-typography-color-subtle" style={{ marginBottom: "18px" }}>
+              Ejecución presupuestaria · consumido del monto total
+            </Typography>
+            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+              {PROGRAM_PERFORMANCE.map((p) => {
+                const pct = Math.round((p.consumed / p.total) * 100);
+                return (
+                  <div key={p.name} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "12px" }}>
+                      <Typography className="v-typography-body-2-bold">{p.name}</Typography>
+                      <Typography className="v-typography-label v-typography-color-subtle" style={{ whiteSpace: "nowrap" }}>
+                        {fmtMillions(p.consumed)} / {fmtMillions(p.total)}
+                      </Typography>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <ProgressLinear value={pct} max={100} completed={pct >= 90} style={{ flex: 1, minWidth: "56px" }} />
+                      <Typography className="v-typography-label" style={{ minWidth: "38px", textAlign: "right", fontWeight: 600 }}>
+                        {pct}%
+                      </Typography>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ContentCardBody>
+        </ContentCard>
+
+        <ContentCard style={{ flex: 1 }}>
+          <ContentCardBody>
+            <Typography tag="h2" className="v-typography-headline-4" style={{ marginBottom: "16px" }}>
+              Top Regiones por Desembolso
+            </Typography>
+            <TableWrapper>
+              <Table tableSize="small">
+                <Thead>
+                  <Tr>
+                    <Th>#</Th>
+                    <Th>Provincia / Región</Th>
+                    <Th>Estudiantes</Th>
+                    <Th>Desembolso</Th>
+                    <Th>Cobertura</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {CANTON_DATA.map((canton, i) => (
+                    <Tr key={canton.name}>
+                      <Td><Typography className="v-typography-label">{i + 1}</Typography></Td>
+                      <Td><Typography className="v-typography-body-2-bold">{canton.name}</Typography></Td>
+                      <Td><Typography className="v-typography-body-2">{canton.students.toLocaleString("es-CR")}</Typography></Td>
+                      <Td><Typography className="v-typography-body-2">{canton.disbursed}</Typography></Td>
+                      <Td>
+                        <div className="v-flex v-align-items-center v-gap-2">
+                          <ProgressLinear value={canton.pct} max={100} completed={canton.pct >= 98} style={{ flex: 1, minWidth: "56px" }} />
+                          <Typography className="v-typography-label" style={{ minWidth: "34px", textAlign: "right" }}>{canton.pct}%</Typography>
+                        </div>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableWrapper>
+          </ContentCardBody>
+        </ContentCard>
+      </div>
+
+      {/* Toast */}
+      <style>{TOAST_ANIM}</style>
+      {toast && (
+        <div style={{
+          position: "fixed", top: 20, right: 20, zIndex: 9999,
+          background: "#fff", borderRadius: 14,
+          boxShadow: "0 8px 32px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.06)",
+          padding: "14px 18px", display: "flex", alignItems: "center", gap: 14,
+          minWidth: 320, maxWidth: 380,
+          animation: `${toastOut ? "toast-out" : "toast-in"} .4s cubic-bezier(.22,.61,.36,1) forwards`,
+        }}>
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <img src={toast.photo} alt={toast.name}
+              style={{ width: 42, height: 42, borderRadius: "50%", objectFit: "cover", border: "2px solid #E2E8F0", display: "block" }} />
+            <div style={{ position: "absolute", bottom: 0, right: 0, width: 13, height: 13, borderRadius: "50%", background: "#10B981", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <VisaCheckmarkLow style={{ color: "#fff", width: 7, height: 7 }} />
+            </div>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1E293B", marginBottom: 2 }}>
+              Nuevo estudiante inscrito
+            </div>
+            <div style={{ fontSize: 12, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {toast.name} · {toast.canton} — Costa Rica
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: "#94A3B8", flexShrink: 0, fontWeight: 500 }}>ahora</div>
+        </div>
+      )}
+    </div>
+  );
+}

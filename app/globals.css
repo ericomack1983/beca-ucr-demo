@@ -126,3 +126,14 @@ h1, h2, h3 {
   background: currentColor;
   animation: pulse-ring 1.5s ease-out infinite;
 }
+
+/* Card shimmer (issuer portal) */
+@keyframes card-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.card-shimmer {
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: card-shimmer 3s linear infinite;
+}
